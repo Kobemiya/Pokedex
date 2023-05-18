@@ -11,5 +11,5 @@ public partial class TStat
 
     public DateTime Date { get; set; }
 
-    public virtual TShortcut IdUrlNavigation { get; set; } = null!;
+    public virtual TPokemons IdUrlNavigation { get; set; } = null!;
 }

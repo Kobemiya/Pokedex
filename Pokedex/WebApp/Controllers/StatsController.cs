@@ -17,9 +17,9 @@ public class StatsController : Controller
 {
     private readonly PokedexContext _context;
     private readonly IMapper _mapper;
-    private readonly IShortcutsRepository _pokemonsRepo;
+    private readonly IPokemonsRepository _pokemonsRepo;
 
-    public StatsController(PokedexContext context, IMapper mapper, IShortcutsRepository pokemonsRepository)
+    public StatsController(PokedexContext context, IMapper mapper, IPokemonsRepository pokemonsRepository)
     {
         _context = context;
         _mapper = mapper;

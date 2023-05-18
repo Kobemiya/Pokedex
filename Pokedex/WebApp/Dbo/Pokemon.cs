@@ -1,6 +1,6 @@
 ﻿namespace WebApp.DataAccess.Dbo;
 
-public class Shortcut : IObjectWithId
+public class Pokemon : IObjectWithId
 {
     public long Id { get; set; }
     public string Url  { get; set; }

@@ -17,7 +17,7 @@ public partial class PokedexContext : DbContext
 
     public virtual DbSet<StatByUrl> StatByUrls { get; set; }
 
-    public virtual DbSet<TShortcut> TShortcuts { get; set; }
+    public virtual DbSet<TPokemons> TShortcuts { get; set; }
 
     public virtual DbSet<TStat> TStats { get; set; }
 
@@ -39,7 +39,7 @@ public partial class PokedexContext : DbContext
                 .HasColumnName("url");
         });
 
-        modelBuilder.Entity<TShortcut>(entity =>
+        modelBuilder.Entity<TPokemons>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK_T_Shorcuts");
 

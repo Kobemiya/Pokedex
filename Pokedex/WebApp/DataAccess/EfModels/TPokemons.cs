@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace WebApp.DataAccess.EfModels;
 
-public partial class TShortcut
+public partial class TPokemons
 {
     public long Id { get; set; }
 

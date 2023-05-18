@@ -9,12 +9,12 @@ namespace WebApp.Pages;
 public class IndexModel : PageModel
 {
     private readonly ILogger<IndexModel> _logger;
-    private readonly IShortcutsRepository _pokemonsRepo;
+    private readonly IPokemonsRepository _pokemonsRepo;
     private readonly IStatsRepository _statsRepo;
 
-    public Task<IEnumerable<Shortcut>> RegisteredShortcuts;
+    public Task<IEnumerable<Pokemon>> RegisteredShortcuts;
 
-    public IndexModel(ILogger<IndexModel> logger, IShortcutsRepository pokemonsRepo, IStatsRepository statsRepository)
+    public IndexModel(ILogger<IndexModel> logger, IPokemonsRepository pokemonsRepo, IStatsRepository statsRepository)
     {
         _logger = logger;
         _pokemonsRepo = pokemonsRepo;
@@ -49,7 +49,7 @@ public class IndexModel : PageModel
         var hash = GenerateRandom();
         while (_pokemonsRepo.GetByHash(hash) != null)
             hash = GenerateRandom();
-        await _pokemonsRepo.Insert(new Shortcut
+        await _pokemonsRepo.Insert(new Pokemon
         {
             Url = Request.Form["url"],
             Hash = hash,

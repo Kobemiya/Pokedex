@@ -12,7 +12,7 @@ public static class Startup
         services.AddSession();
         services.AddLogging();
         services.AddControllers();
-        services.AddScoped<IShortcutsRepository, ShortcutsRepository>();
+        services.AddScoped<IPokemonsRepository, PokemonsRepository>();
         services.AddScoped<IStatsRepository, StatsRepository>();
         services.AddEntityFrameworkSqlServer();
         services.AddDbContext<PokedexContext>();

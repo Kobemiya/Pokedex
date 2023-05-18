@@ -2,17 +2,14 @@
 @model IndexModel
 
 <div class="text-center">
-    <h1 class="display-4">Bienvenue</h1>
-    <p>Service permettant de raccourcir les URLs, your session id : @(HttpContext.Session.GetString("id"))</p>
-    <form method="post">
-        <input type="text" name="url"/>
-        <button type="submit">Smart !</button>
-    </form>
+    <h1 class="display-4">Bienvenue sur votre Pokedex</h1>
+    <p>Service permettant de lister vos pokémons, votre id de session : @(HttpContext.Session.GetString("id"))</p>
+    <button type="submit">Ajouter un Pokémon !</button>
     <br/>
     <table class="table table-striped border">
         <tr class="table-secondary">
-            <th>Url</th>
-            <th>Hash</th>
+            <th>Nom</th>
+            <th>Type</th>
             <th></th>
         </tr>
         @foreach (var pokemon in await Model.RegisteredShortcuts)
@@ -25,3 +22,11 @@
         }
     </table>
 </div>
+
+
+<!--
+    <form method="post">
+        <input type="text" name="url"/>
+        <button type="submit">Add a new Pokemon !</button>
+    </form>
+-->
