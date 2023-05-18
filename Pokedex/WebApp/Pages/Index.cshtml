@@ -1,0 +1,27 @@
+﻿@page "{hash?}"
+@model IndexModel
+
+<div class="text-center">
+    <h1 class="display-4">Bienvenue</h1>
+    <p>Service permettant de raccourcir les URLs, your session id : @(HttpContext.Session.GetString("id"))</p>
+    <form method="post">
+        <input type="text" name="url"/>
+        <button type="submit">Smart !</button>
+    </form>
+    <br/>
+    <table class="table table-striped border">
+        <tr class="table-secondary">
+            <th>Url</th>
+            <th>Hash</th>
+            <th></th>
+        </tr>
+        @foreach (var pokemon in await Model.RegisteredShortcuts)
+        {
+            <tr>
+                <td>@Html.DisplayFor(s => pokemon.Url)</td>
+                <td>@Html.DisplayFor(s => pokemon.Hash)</td>
+                <td><button onclick="navigator.clipboard.writeText(window.location.href + '@(pokemon.Hash.TrimEnd())')">COPY</button></td>
+            </tr>
+        }
+    </table>
+</div>
