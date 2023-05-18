@@ -17,7 +17,7 @@ public partial class PokedexContext : DbContext
 
     public virtual DbSet<StatByUrl> StatByUrls { get; set; }
 
-    public virtual DbSet<TPokemons> TShortcuts { get; set; }
+    public virtual DbSet<TPokemons> TPokemons { get; set; }
 
     public virtual DbSet<TStat> TStats { get; set; }
 

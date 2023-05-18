@@ -13,7 +13,7 @@ public class StatsRepository : Repository<TStat, Stat>, IStatsRepository
     public async Task<Stat> Insert(Stat entity)
     {
         TStat dbEntity = _mapper.Map<TStat>(entity);
-        dbEntity.IdUrlNavigation = _context.TShortcuts.Find(entity.IdUrlNavigation?.Id ?? entity.IdUrl); // links the Shortcut object
+        dbEntity.IdUrlNavigation = _context.TPokemons.Find(entity.IdUrlNavigation?.Id ?? entity.IdUrl); // links the Shortcut object
         _set.Add(dbEntity);
         try
         {

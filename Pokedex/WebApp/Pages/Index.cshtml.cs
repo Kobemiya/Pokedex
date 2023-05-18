@@ -12,7 +12,7 @@ public class IndexModel : PageModel
     private readonly IPokemonsRepository _pokemonsRepo;
     private readonly IStatsRepository _statsRepo;
 
-    public Task<IEnumerable<Pokemon>> RegisteredShortcuts;
+    public Task<IEnumerable<Pokemon>> RegisteredPokemons;
 
     public IndexModel(ILogger<IndexModel> logger, IPokemonsRepository pokemonsRepo, IStatsRepository statsRepository)
     {
@@ -28,7 +28,7 @@ public class IndexModel : PageModel
     {
         if (hash.IsNullOrEmpty())
         {
-            RegisteredShortcuts = _pokemonsRepo.Get();
+            RegisteredPokemons = _pokemonsRepo.Get();
             HttpContext.Session.SetString("id", GenerateRandom());
             return Page();
         }
@@ -55,6 +55,6 @@ public class IndexModel : PageModel
             Hash = hash,
             SessionId = HttpContext.Session.GetString("id")!
         });
-        RegisteredShortcuts = _pokemonsRepo.Get();
+        RegisteredPokemons = _pokemonsRepo.Get();
     }
 }

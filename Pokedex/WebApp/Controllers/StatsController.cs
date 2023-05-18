@@ -29,7 +29,7 @@ public class StatsController : Controller
     [HttpGet("{sessionId}")]
     public async Task<IActionResult> GetBySession(string sessionId)
     { 
-        return Ok(_context.TShortcuts
+        return Ok(_context.TPokemons
             .Where(s => s.SessionId == sessionId)
             .Select(s => new StatForUrl{ Url = s.Url, Hit = s.TStats.Count}));
     }

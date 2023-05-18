@@ -10,12 +10,12 @@ public class PokemonsRepository : Repository<EfModels.TPokemons, Dbo.Pokemon>, I
     public PokemonsRepository(PokedexContext context, ILogger<PokemonsRepository> logger, IMapper mapper) : base(context, logger, mapper) { }
     public Pokemon? GetByHash(string hash)
     {
-        return _mapper.Map<Pokemon?>(_context.TShortcuts.FirstOrDefault(s => s.Hash == hash));
+        return _mapper.Map<Pokemon?>(_context.TPokemons.FirstOrDefault(s => s.Hash == hash));
     }
 
     public IEnumerable<Pokemon> GetBySessionId(string sessionId)
     {
-        return _context.TShortcuts
+        return _context.TPokemons
             .Where(s => s.SessionId == sessionId)
             .Select(s => _mapper.Map<Pokemon>(s));
     }
