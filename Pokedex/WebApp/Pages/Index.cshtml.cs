@@ -1,54 +1,102 @@
-﻿using System.Collections;
+﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.IdentityModel.Tokens;
 using PokedexBackend.Dbo;
 using PokedexBackend.DataAccess.Repositories;
+using WebApp.MockRepositories;
+using WebApp.Pages;
 
-namespace WebApp.Pages;
-
-public class IndexModel : PageModel
+namespace WebApp.Pages
 {
-    private readonly ILogger<IndexModel> _logger;
-    private readonly IPokemonsRepository _pokemonsRepo;
-
-    public IEnumerable RegisteredPokemons;
-
-    public IndexModel(ILogger<IndexModel> logger, IPokemonsRepository pokemonsRepo)
+    public class IndexModel : PageModel
     {
-        _logger = logger;
-        _pokemonsRepo = pokemonsRepo;
-    }
+        private readonly ILogger<IndexModel> _logger;
+        private readonly IPokemonsRepository _pokemonsRepo;
 
-    private string GenerateRandom() =>
-        new(".....".Select(c => "abcedfghijklmnopqrstuvwxyz0123456789"[new Random().Next(36)]).ToArray());
-    
-    public async Task<IActionResult> OnGet(long id)
-    {
-        if (id == 0)
+        public IEnumerable<Pokemon> RegisteredPokemons { get; set; }
+
+
+        [BindProperty(SupportsGet = true)]
+        public string SearchQuery { get; set; }
+        
+        public IndexModel(ILogger<IndexModel> logger)
         {
-            RegisteredPokemons = await _pokemonsRepo.GetAll();
-            HttpContext.Session.SetString("id", GenerateRandom());
+            _logger = logger;
+            _pokemonsRepo = new MockPokemonsRepository();
+        }
+        /*
+        public IndexModel(ILogger<IndexModel> logger, IPokemonsRepository pokemonsRepo)
+        {
+            _logger = logger;
+            _pokemonsRepo = pokemonsRepo;
+        }*/
+
+        public async Task<IActionResult> OnGet()
+        {
+            var pokemons = await _pokemonsRepo.GetAll();
+            RegisteredPokemons = pokemons != null ? 
+                pokemons.Select(pokemon => new Pokemon
+                {
+                    Id = pokemon.Id,
+                    Name = pokemon.Name,
+                    Def = pokemon.Def,
+                    DefSpe = pokemon.DefSpe,
+                    Attack = pokemon.Attack,
+                    AttackSpe = pokemon.AttackSpe,
+                    Speed = pokemon.Speed,
+                    Hp = pokemon.Hp,
+                    Type1 = pokemon.Type1,
+                    Type2 = pokemon.Type2,
+                    Description = pokemon.Description,
+                    ImagePath = pokemon.ImagePath
+                }) : Enumerable.Empty<Pokemon>();
             return Page();
         }
 
-        var found = _pokemonsRepo.GetById(id);
-        if (found == null)
-            return NotFound();
-        return Redirect(found.Result.Name);
-    }
-
-    public async Task OnPost()
-    {/*
-        var hash = GenerateRandom();
-        while (_pokemonsRepo.GetByHash(hash) != null)
-            hash = GenerateRandom();
-        await _pokemonsRepo.Insert(new Pokemon
+        public async Task<IActionResult> OnPostSearch([FromForm] string searchQuery)
         {
-            Url = Request.Form["url"],
-            Hash = hash,
-            SessionId = HttpContext.Session.GetString("id")!
-        });
-        RegisteredPokemons = _pokemonsRepo.Get();*/
+            SearchQuery = searchQuery;
+            
+            if (string.IsNullOrEmpty(SearchQuery))
+            {
+                var pokemons = await _pokemonsRepo.GetAll();
+                RegisteredPokemons = pokemons.Select(pokemon => new Pokemon
+                {
+                    Id = pokemon.Id,
+                    Name = pokemon.Name,
+                    Def = pokemon.Def,
+                    DefSpe = pokemon.DefSpe,
+                    Attack = pokemon.Attack,
+                    AttackSpe = pokemon.AttackSpe,
+                    Speed = pokemon.Speed,
+                    Hp = pokemon.Hp,
+                    Type1 = pokemon.Type1,
+                    Type2 = pokemon.Type2,
+                    Description = pokemon.Description,
+                    ImagePath = pokemon.ImagePath
+                });
+            }
+            else
+            {
+                var pokemons = await _pokemonsRepo.GetAll();
+                RegisteredPokemons = pokemons.Select(pokemon => new Pokemon
+                {
+                    Id = pokemon.Id,
+                    Name = pokemon.Name,
+                    Def = pokemon.Def,
+                    DefSpe = pokemon.DefSpe,
+                    Attack = pokemon.Attack,
+                    AttackSpe = pokemon.AttackSpe,
+                    Speed = pokemon.Speed,
+                    Hp = pokemon.Hp,
+                    Type1 = pokemon.Type1,
+                    Type2 = pokemon.Type2,
+                    Description = pokemon.Description,
+                    ImagePath = pokemon.ImagePath
+                }).Where(pokemon => pokemon.Name.Contains(SearchQuery, StringComparison.OrdinalIgnoreCase));
+            }
+
+            return Page();
+        }
     }
 }

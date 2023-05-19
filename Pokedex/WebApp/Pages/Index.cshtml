@@ -6,24 +6,7 @@
     ViewData["Title"] = "Home Page";
 }
 
-@{
-    // Mock data 
-    var pokemons = new List<(string ImageUrl, string Name, List<string> Types)>
-    {
-        ("/Screenshot_2.jpg", "Pokémon 1", new List<string>{"Eau", "Herbe"}),
-        ("/Screenshot_2.jpg", "Pokémon 2", new List<string>{"Feu"}),
-        ("/Screenshot_2.jpg", "Pokémon 3", new List<string>{"Eau", "Feu"}),
-        ("/Screenshot_2.jpg", "Pokémon 4", new List<string>{"Eau"}),
-        ("/Screenshot_2.jpg", "Pokémon 5", new List<string>{"Feu", "Herbe"}),
-        ("/Screenshot_2.jpg", "Pokémon 6", new List<string>{"Feu"}),
-        ("/Screenshot_2.jpg", "Pokémon 7", new List<string>{"Herbe"}),
-    };
-}
-
 <style>
-    .custom-padding {
-        padding: 5px;
-    }
     .card-types {
         display: flex;
         flex-wrap: wrap;
@@ -48,7 +31,7 @@
 </style>
 
 <div class="text-center">
-    <h1 class="display-4">Bienvenue sur le Pokédex !</h1>
+    <h1>Bienvenue sur le Pokédex !</h1>
     <p>La liste qui recense les Pokémons existants.</p>
     <button class="btn btn-primary mb-2" onclick="addPokemonPage()">J'ajoute un Pokémon !</button>
     <br/>
@@ -57,10 +40,15 @@
 
 <div class="container">
     <div class="row">
-        <div class="col-md-12 mb-4">
-            <input id="searchInput" type="text" placeholder="Rechercher..." oninput="searchPokemon()" class="form-control">
+        <div style="margin: 7px">
+            <form method="post" asp-page-handler="Search">
+                <div class="input-group">
+                    <input id="searchInput" type="text" placeholder="Rechercher..." class="form-control" value="@Model.SearchQuery" name="SearchQuery">
+                        <button type="submit" class="btn btn-primary" style="margin-left: 5px;">Rechercher</button>
+                </div>
+            </form>
         </div>
-        <div class="col-md-12 mb-4">
+        <div style="margin: 7px">
             <label for="typeSelect">Filter par type :</label>
             <select id="typeSelect" onchange="filterByType()">
                 <option value="">Sélectionnez un type...</option>
@@ -71,17 +59,18 @@
         </div>
     </div>
     <div id="pokemonList" class="row">
-        @foreach (var pokemon in pokemons)
+        @foreach (var pokemon in Model.RegisteredPokemons)
         {
-            <div class="col-md-4 custom-padding card-item">
+            <div class="col-md-4 card-item" style="padding: 5px">
                 <div class="card">
-                    <img src="@Url.Content(@pokemon.ImageUrl)" class="card-img-top" alt="Pokemon Image">
+                    <img src="@Url.Content(pokemon.ImagePath)" class="card-img-top" alt="Pokemon Image">
                     <div class="card-body">
                         <h5 class="card-title">@pokemon.Name</h5>
                         <div class="card-types">
-                            @foreach (var type in pokemon.Types)
+                            <span class="@pokemon.Type1">@pokemon.Type1</span>
+                            @if (pokemon.Type2?.Length > 0)
                             {
-                                <span class="@type">@type</span>
+                                <span class="@pokemon.Type2">@pokemon.Type2</span>
                             }
                         </div>
                     </div>
@@ -100,35 +89,9 @@
 <script>
 // todo : add the creation page
 function addPokemonPage() {
-    window.location.href = "/add-pokemon.html";
+    window.location.href = "@Url.Content("~/add-pokemon.html")";
 }
     
-function searchPokemon() {
-    var input = document.getElementById('searchInput');
-    var filter = input.value.toUpperCase();
-    var pokemonList = document.getElementById('pokemonList');
-    var cards = pokemonList.getElementsByClassName('card-item');
-    var noResultsMessage = document.getElementById('noResultsMessage');
-
-    var found = false;
-
-    for (var i = 0; i < cards.length; i++) {
-        var title = cards[i].querySelector('.card-title');
-        if (title.innerText.toUpperCase().indexOf(filter) > -1) {
-            cards[i].style.display = '';
-            found = true;
-        } else {
-            cards[i].style.display = 'none';
-        }
-    }
-
-    if (found) {
-        noResultsMessage.style.display = 'none';
-    } else {
-        noResultsMessage.style.display = '';
-    }
-}
-
 function filterByType() {
     var typeSelect = document.getElementById('typeSelect');
     var selectedType = typeSelect.value.toUpperCase();
