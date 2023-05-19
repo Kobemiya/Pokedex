@@ -24,7 +24,7 @@ public class PokemonRequest : IRequestModel<PokemonRequest, Dbo.Pokemon>
 
     public string? ImagePath { get; set; }
 
-    public Dbo.Pokemon toDbo(long id = -1)
+    public Dbo.Pokemon toDbo(long id = 0)
     {
         var result = new Dbo.Pokemon();
         result.Id = id;

@@ -7,7 +7,7 @@ public class UserRequest : IRequestModel<UserRequest, Dbo.User>
 
     public string Password { get; set; } = null!;
 
-    public Dbo.User toDbo(long id = -1)
+    public Dbo.User toDbo(long id = 0)
     {
         var result = new Dbo.User();
         result.Id = id;

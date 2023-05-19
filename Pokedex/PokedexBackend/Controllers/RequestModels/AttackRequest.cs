@@ -11,7 +11,7 @@ public class AttackRequest : IRequestModel<AttackRequest, Dbo.Attack>
 
     public int Accuracy { get; set; }
 
-    public Dbo.Attack toDbo(long id = -1)
+    public Dbo.Attack toDbo(long id = 0)
     {
         var result = new Dbo.Attack();
         result.Id = id;
