@@ -10,18 +10,17 @@ namespace WebApp.Pages
 {
     public class IndexModel : PageModel
     {
-        private readonly ILogger<IndexModel> _logger;
         private readonly IPokemonsRepository _pokemonsRepo;
-
         public IEnumerable<Pokemon> RegisteredPokemons { get; set; }
-
 
         [BindProperty(SupportsGet = true)]
         public string SearchQuery { get; set; }
         
+        [BindProperty(SupportsGet = true)]
+        public string SelectedType { get; set; }
+        
         public IndexModel(ILogger<IndexModel> logger)
         {
-            _logger = logger;
             _pokemonsRepo = new MockPokemonsRepository();
         }
         /*
@@ -34,22 +33,22 @@ namespace WebApp.Pages
         public async Task<IActionResult> OnGet()
         {
             var pokemons = await _pokemonsRepo.GetAll();
-            RegisteredPokemons = pokemons != null ? 
-                pokemons.Select(pokemon => new Pokemon
-                {
-                    Id = pokemon.Id,
-                    Name = pokemon.Name,
-                    Def = pokemon.Def,
-                    DefSpe = pokemon.DefSpe,
-                    Attack = pokemon.Attack,
-                    AttackSpe = pokemon.AttackSpe,
-                    Speed = pokemon.Speed,
-                    Hp = pokemon.Hp,
-                    Type1 = pokemon.Type1,
-                    Type2 = pokemon.Type2,
-                    Description = pokemon.Description,
-                    ImagePath = pokemon.ImagePath
-                }) : Enumerable.Empty<Pokemon>();
+            RegisteredPokemons = pokemons != null ? pokemons.Select(pokemon => new Pokemon
+            {
+                Id = pokemon.Id,
+                Name = pokemon.Name,
+                Def = pokemon.Def,
+                DefSpe = pokemon.DefSpe,
+                Attack = pokemon.Attack,
+                AttackSpe = pokemon.AttackSpe,
+                Speed = pokemon.Speed,
+                Hp = pokemon.Hp,
+                Type1 = pokemon.Type1,
+                Type2 = pokemon.Type2,
+                Description = pokemon.Description,
+                ImagePath = pokemon.ImagePath
+            }) : Enumerable.Empty<Pokemon>();
+
             return Page();
         }
 
@@ -57,28 +56,25 @@ namespace WebApp.Pages
         {
             SearchQuery = searchQuery;
             
-            if (string.IsNullOrEmpty(SearchQuery))
+            var pokemons = await _pokemonsRepo.GetAll();
+            RegisteredPokemons = pokemons.Select(pokemon => new Pokemon
             {
-                var pokemons = await _pokemonsRepo.GetAll();
-                RegisteredPokemons = pokemons.Select(pokemon => new Pokemon
-                {
-                    Id = pokemon.Id,
-                    Name = pokemon.Name,
-                    Def = pokemon.Def,
-                    DefSpe = pokemon.DefSpe,
-                    Attack = pokemon.Attack,
-                    AttackSpe = pokemon.AttackSpe,
-                    Speed = pokemon.Speed,
-                    Hp = pokemon.Hp,
-                    Type1 = pokemon.Type1,
-                    Type2 = pokemon.Type2,
-                    Description = pokemon.Description,
-                    ImagePath = pokemon.ImagePath
-                });
-            }
-            else
+                Id = pokemon.Id,
+                Name = pokemon.Name,
+                Def = pokemon.Def,
+                DefSpe = pokemon.DefSpe,
+                Attack = pokemon.Attack,
+                AttackSpe = pokemon.AttackSpe,
+                Speed = pokemon.Speed,
+                Hp = pokemon.Hp,
+                Type1 = pokemon.Type1,
+                Type2 = pokemon.Type2,
+                Description = pokemon.Description,
+                ImagePath = pokemon.ImagePath
+            });
+            
+            if (!string.IsNullOrEmpty(SearchQuery))
             {
-                var pokemons = await _pokemonsRepo.GetAll();
                 RegisteredPokemons = pokemons.Select(pokemon => new Pokemon
                 {
                     Id = pokemon.Id,
@@ -94,6 +90,36 @@ namespace WebApp.Pages
                     Description = pokemon.Description,
                     ImagePath = pokemon.ImagePath
                 }).Where(pokemon => pokemon.Name.Contains(SearchQuery, StringComparison.OrdinalIgnoreCase));
+            }
+
+            return Page();
+        }
+        
+        public async Task<IActionResult> OnPostFilter([FromForm] string selectedType)
+        {
+            SelectedType = selectedType;
+            
+            var pokemons = await _pokemonsRepo.GetAll();
+            RegisteredPokemons = pokemons.Select(pokemon => new Pokemon
+            {
+                Id = pokemon.Id,
+                Name = pokemon.Name,
+                Def = pokemon.Def,
+                DefSpe = pokemon.DefSpe,
+                Attack = pokemon.Attack,
+                AttackSpe = pokemon.AttackSpe,
+                Speed = pokemon.Speed,
+                Hp = pokemon.Hp,
+                Type1 = pokemon.Type1,
+                Type2 = pokemon.Type2,
+                Description = pokemon.Description,
+                ImagePath = pokemon.ImagePath
+            });
+
+            if (!string.IsNullOrEmpty(SelectedType))
+            {
+                RegisteredPokemons = RegisteredPokemons.Where(pokemon =>
+                    pokemon.Type1.Equals(SelectedType) || (pokemon.Type2 != null && pokemon.Type2.Equals(SelectedType)));
             }
 
             return Page();

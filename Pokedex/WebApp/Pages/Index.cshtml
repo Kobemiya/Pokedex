@@ -44,26 +44,29 @@
             <form method="post" asp-page-handler="Search">
                 <div class="input-group">
                     <input id="searchInput" type="text" placeholder="Rechercher..." class="form-control" value="@Model.SearchQuery" name="SearchQuery">
-                        <button type="submit" class="btn btn-primary" style="margin-left: 5px;">Rechercher</button>
+                    <button type="submit" class="btn btn-primary" style="margin-left: 5px;">Rechercher</button>
                 </div>
             </form>
         </div>
-        <div style="margin: 7px">
-            <label for="typeSelect">Filter par type :</label>
-            <select id="typeSelect" onchange="filterByType()">
-                <option value="">Sélectionnez un type...</option>
-                <option value="Eau">Eau</option>
-                <option value="Herbe">Herbe</option>
-                <option value="Feu">Feu</option>
-            </select>
+        <div class="filter-select">
+            <form method="post" asp-page-handler="Filter">
+                <label for="typeSelect">Filter par type :</label>
+                <select id="typeSelect" name="SelectedType">
+                    <option value="">Sélectionnez un type...</option>
+                    <option value="Eau">Eau</option>
+                    <option value="Herbe">Herbe</option>
+                    <option value="Feu">Feu</option>
+                </select>
+                <button type="submit" class="btn btn-primary" style="margin-left: 5px;">Filtrer</button>
+            </form>
         </div>
     </div>
     <div id="pokemonList" class="row">
         @foreach (var pokemon in Model.RegisteredPokemons)
         {
             <div class="col-md-4 card-item" style="padding: 5px">
-                <div class="card">
-                    <img src="@Url.Content(pokemon.ImagePath)" class="card-img-top" alt="Pokemon Image">
+                <div class="card" style="border-radius: 5px">
+                    <img src="@Url.Content(pokemon.ImagePath)" class="card-img-top" alt="Pokemon Image" style="border-radius: 5px">
                     <div class="card-body">
                         <h5 class="card-title">@pokemon.Name</h5>
                         <div class="card-types">
@@ -92,40 +95,4 @@ function addPokemonPage() {
     window.location.href = "@Url.Content("~/add-pokemon.html")";
 }
     
-function filterByType() {
-    var typeSelect = document.getElementById('typeSelect');
-    var selectedType = typeSelect.value.toUpperCase();
-    var pokemonList = document.getElementById('pokemonList');
-    var cards = pokemonList.getElementsByClassName('card-item');
-    var noResultsMessage = document.getElementById('noResultsMessage');
-
-    var found = false;
-
-    for (var i = 0; i < cards.length; i++) {
-        var types = cards[i].querySelector('.card-types');
-        var typeTags = types.getElementsByTagName('span');
-        var showCard = false;
-
-        for (var j = 0; j < typeTags.length; j++) {
-            var type = typeTags[j].innerText.toUpperCase();
-            if (selectedType === '' || type === selectedType) {
-                showCard = true;
-                break;
-            }
-        }
-
-        if (showCard) {
-            cards[i].style.display = '';
-            found = true;
-        } else {
-            cards[i].style.display = 'none';
-        }
-    }
-
-    if (found) {
-        noResultsMessage.style.display = 'none';
-    } else {
-        noResultsMessage.style.display = '';
-    }
-}
 </script>
