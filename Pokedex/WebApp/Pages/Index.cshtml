@@ -50,6 +50,9 @@
 <div class="text-center">
     <h1 class="display-4">Bienvenue sur le Pokédex !</h1>
     <p>La liste qui recense les Pokémons existants.</p>
+    <button class="btn btn-primary mb-2" onclick="addPokemonPage()">J'ajoute un Pokémon !</button>
+    <br/>
+    <br/>
 </div>
 
 <div class="container">
@@ -95,6 +98,11 @@
 
 
 <script>
+// todo : add the creation page
+function addPokemonPage() {
+    window.location.href = "/add-pokemon.html";
+}
+    
 function searchPokemon() {
     var input = document.getElementById('searchInput');
     var filter = input.value.toUpperCase();
@@ -120,43 +128,41 @@ function searchPokemon() {
         noResultsMessage.style.display = '';
     }
 }
-</script>
 
-<script>
-    function filterByType() {
-        var typeSelect = document.getElementById('typeSelect');
-        var selectedType = typeSelect.value.toUpperCase();
-        var pokemonList = document.getElementById('pokemonList');
-        var cards = pokemonList.getElementsByClassName('card-item');
-        var noResultsMessage = document.getElementById('noResultsMessage');
+function filterByType() {
+    var typeSelect = document.getElementById('typeSelect');
+    var selectedType = typeSelect.value.toUpperCase();
+    var pokemonList = document.getElementById('pokemonList');
+    var cards = pokemonList.getElementsByClassName('card-item');
+    var noResultsMessage = document.getElementById('noResultsMessage');
 
-        var found = false;
+    var found = false;
 
-        for (var i = 0; i < cards.length; i++) {
-            var types = cards[i].querySelector('.card-types');
-            var typeTags = types.getElementsByTagName('span');
-            var showCard = false;
+    for (var i = 0; i < cards.length; i++) {
+        var types = cards[i].querySelector('.card-types');
+        var typeTags = types.getElementsByTagName('span');
+        var showCard = false;
 
-            for (var j = 0; j < typeTags.length; j++) {
-                var type = typeTags[j].innerText.toUpperCase();
-                if (selectedType === '' || type === selectedType) {
-                    showCard = true;
-                    break;
-                }
-            }
-
-            if (showCard) {
-                cards[i].style.display = '';
-                found = true;
-            } else {
-                cards[i].style.display = 'none';
+        for (var j = 0; j < typeTags.length; j++) {
+            var type = typeTags[j].innerText.toUpperCase();
+            if (selectedType === '' || type === selectedType) {
+                showCard = true;
+                break;
             }
         }
 
-        if (found) {
-            noResultsMessage.style.display = 'none';
+        if (showCard) {
+            cards[i].style.display = '';
+            found = true;
         } else {
-            noResultsMessage.style.display = '';
+            cards[i].style.display = 'none';
         }
     }
+
+    if (found) {
+        noResultsMessage.style.display = 'none';
+    } else {
+        noResultsMessage.style.display = '';
+    }
+}
 </script>
