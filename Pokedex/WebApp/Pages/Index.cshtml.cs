@@ -18,7 +18,9 @@ namespace WebApp.Pages
         
         [BindProperty(SupportsGet = true)]
         public string SelectedType { get; set; }
-        
+
+        public bool ShowFavorites { get; set; }
+
         public IndexModel(ILogger<IndexModel> logger)
         {
             _pokemonsRepo = new MockPokemonsRepository();
@@ -73,7 +75,7 @@ namespace WebApp.Pages
                 ImagePath = pokemon.ImagePath
             });
             
-            if (!string.IsNullOrEmpty(SearchQuery))
+            if (!string.IsNullOrEmpty(SearchQuery) && !searchQuery.Equals("Tous les types"))
             {
                 RegisteredPokemons = pokemons.Select(pokemon => new Pokemon
                 {

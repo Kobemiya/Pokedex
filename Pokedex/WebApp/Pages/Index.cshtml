@@ -13,13 +13,65 @@
         margin-top: 10px;
     }
     .card-types .Eau {
-        background-color: blue;
-    }
-    .card-types .Herbe {
-        background-color: green;
+        background-color: #4b4df7;
     }
     .card-types .Feu {
-        background-color: red;
+        background-color: #fc0000;
+    }
+    .card-types .Plante {
+        background-color: #01a800;
+    }
+    .card-types .Fée {
+        background-color: #fda9d3;
+        color: black;
+    }
+    .card-types .Acier {
+        background-color: #bfbfbf;
+        color: black;
+    }
+    .card-types .Ténèbres {
+        background-color: #002142;
+    }
+    .card-types .Spectre {
+        background-color: #3d124f;
+    }
+    .card-types .Dragon {
+        background-color: #f0ac0e;
+        color: black;
+    }
+    .card-types .Insecte {
+        background-color: #aff905;
+        color: black;
+    }
+    .card-types .Glace {
+        background-color: #00fbfd;
+        color: black;
+    }
+    .card-types .Roche {
+        background-color: #717171;
+    }
+    .card-types .Sol {
+        background-color: #4b301f;
+    }
+    .card-types .Poison {
+        background-color: #817f04;
+    }
+    .card-types .Vol {
+        background-color: #5701ad;
+    }
+    .card-types .Psy {
+        background-color: #b500b4;
+    }
+    .card-types .Electrique {
+        background-color: #fdfd00;
+        color: black;
+    }
+    .card-types .Combat {
+        background-color: #c1491c;
+    }
+    .card-types .Normal {
+        background-color: #fcfcfc;
+        color: black;
     }
     .card-types span {
         margin-right: 10px;
@@ -49,15 +101,36 @@
             </form>
         </div>
         <div class="filter-select">
-            <form method="post" asp-page-handler="Filter">
-                <label for="typeSelect">Filter par type :</label>
-                <select id="typeSelect" name="SelectedType">
-                    <option value="">Sélectionnez un type...</option>
-                    <option value="Eau">Eau</option>
-                    <option value="Herbe">Herbe</option>
-                    <option value="Feu">Feu</option>
-                </select>
-                <button type="submit" class="btn btn-primary" style="margin-left: 5px;">Filtrer</button>
+            <form method="post" asp-page-handler="Filter" style="display: flex; justify-content: space-between">
+                <span>
+                    <label for="typeSelect">Filter par type :</label>
+                    <select id="typeSelect" name="SelectedType">
+                        <option value="">Sélectionnez un type...</option>
+                        <option value="">Tous les types</option>
+                        <option value="Eau">Eau</option>
+                        <option value="Feu">Feu</option>
+                        <option value="Plante">Plante</option>
+                        <option value="Fée">Fée</option>
+                        <option value="Acier">Acier</option>
+                        <option value="Ténèbres">Ténèbres</option>
+                        <option value="Spectre">Spectre</option>
+                        <option value="Dragon">Dragon</option>
+                        <option value="Insecte">Insecte</option>
+                        <option value="Glace">Glace</option>
+                        <option value="Roche">Roche</option>
+                        <option value="Sol">Sol</option>
+                        <option value="Poison">Poison</option>
+                        <option value="Vol">Vol</option>
+                        <option value="Psy">Psy</option>
+                        <option value="Electrique">Electrique</option>
+                        <option value="Combat">Combat</option>
+                        <option value="Normal">Normal</option>
+                    </select>
+                </span>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" id="favoriteCheckbox" name="ShowFavorites" @(Model.ShowFavorites ? "checked" : "")>
+                    <label class="form-check-label" for="favoriteCheckbox">Ne montrer que les favoris</label>
+                </div>
             </form>
         </div>
     </div>
@@ -81,9 +154,9 @@
             </div>
         }
     </div>
-    <div id="noResultsMessage" class="row" style="display: none;">
+    <div id="noResultsMessage" class="row" style="@(Model.RegisteredPokemons.Any() ? "display:none; padding: 5px" : "")">
         <div class="col-md-12">
-            <p>Aucun Pokémon ne correspond à cette recherche.</p>
+            <p>Aucun Pokémon trouvé !</p>
         </div>
     </div>
 </div>
@@ -94,5 +167,9 @@
 function addPokemonPage() {
     window.location.href = "@Url.Content("~/add-pokemon.html")";
 }
+
+document.getElementById("typeSelect").addEventListener("change", function() {
+    this.form.submit();
+});
     
 </script>
