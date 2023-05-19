@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="wwwroot\Screenshot_2.jpg" />
+  </ItemGroup>
+  
+  <ItemGroup>
     <_ContentIncludedByDefault Remove="Views\Home\Index.cshtml" />
     <_ContentIncludedByDefault Remove="Views\Home\Privacy.cshtml" />
     <_ContentIncludedByDefault Remove="Views\Shared\Error.cshtml" />

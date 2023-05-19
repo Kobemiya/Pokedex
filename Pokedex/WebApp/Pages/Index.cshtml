@@ -1,29 +1,162 @@
 ﻿@page "{hash?}"
 @model IndexModel
 
+<!-- fixme ^-->
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+@{
+    // Mock data 
+    var pokemons = new List<(string ImageUrl, string Name, List<string> Types)>
+    {
+        ("/Screenshot_2.jpg", "Pokémon 1", new List<string>{"Eau", "Herbe"}),
+        ("/Screenshot_2.jpg", "Pokémon 2", new List<string>{"Feu"}),
+        ("/Screenshot_2.jpg", "Pokémon 3", new List<string>{"Eau", "Feu"}),
+        ("/Screenshot_2.jpg", "Pokémon 4", new List<string>{"Eau"}),
+        ("/Screenshot_2.jpg", "Pokémon 5", new List<string>{"Feu", "Herbe"}),
+        ("/Screenshot_2.jpg", "Pokémon 6", new List<string>{"Feu"}),
+        ("/Screenshot_2.jpg", "Pokémon 7", new List<string>{"Herbe"}),
+    };
+}
+
+<style>
+    .custom-padding {
+        padding: 5px;
+    }
+    .card-types {
+        display: flex;
+        flex-wrap: wrap;
+        margin-top: 10px;
+    }
+    .card-types .Eau {
+        background-color: blue;
+    }
+    .card-types .Herbe {
+        background-color: green;
+    }
+    .card-types .Feu {
+        background-color: red;
+    }
+    .card-types span {
+        margin-right: 10px;
+        padding: 5px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        color: white;
+    }
+</style>
+
 <div class="text-center">
-    <h1 class="display-4">Bienvenue sur votre Pokedex</h1>
-    <p>Service permettant consulter la liste de Pokémons existant</p>
-    <button type="submit">Ajouter un Pokémon !</button>
-    <br/>
-    <table class="table table-striped border">
-        <tr class="table-secondary">
-            <th>Nom</th>
-            <th>Type</th>
-            <th></th>
-        </tr>
-    </table>
+    <h1 class="display-4">Bienvenue sur le Pokédex !</h1>
+    <p>La liste qui recense les Pokémons existants.</p>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12 mb-4">
+            <input id="searchInput" type="text" placeholder="Rechercher..." oninput="searchPokemon()" class="form-control">
+        </div>
+        <div class="col-md-12 mb-4">
+            <label for="typeSelect">Filter par type :</label>
+            <select id="typeSelect" onchange="filterByType()">
+                <option value="">Sélectionnez un type...</option>
+                <option value="Eau">Eau</option>
+                <option value="Herbe">Herbe</option>
+                <option value="Feu">Feu</option>
+            </select>
+        </div>
+    </div>
+    <div id="pokemonList" class="row">
+        @foreach (var pokemon in pokemons)
+        {
+            <div class="col-md-4 custom-padding card-item">
+                <div class="card">
+                    <img src="@Url.Content(@pokemon.ImageUrl)" class="card-img-top" alt="Pokemon Image">
+                    <div class="card-body">
+                        <h5 class="card-title">@pokemon.Name</h5>
+                        <div class="card-types">
+                            @foreach (var type in pokemon.Types)
+                            {
+                                <span class="@type">@type</span>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+    <div id="noResultsMessage" class="row" style="display: none;">
+        <div class="col-md-12">
+            <p>Aucun Pokémon ne correspond à cette recherche.</p>
+        </div>
+    </div>
 </div>
 
 
-<!--
-<form method="post">
-    <input type="text" name="url"/>
-    <button type="submit">Add a new Pokemon !</button>
-</form>
-//faire appel à la db dans mes onpost etc
-        {
-            <tr>
-            </tr>
+<script>
+function searchPokemon() {
+    var input = document.getElementById('searchInput');
+    var filter = input.value.toUpperCase();
+    var pokemonList = document.getElementById('pokemonList');
+    var cards = pokemonList.getElementsByClassName('card-item');
+    var noResultsMessage = document.getElementById('noResultsMessage');
+
+    var found = false;
+
+    for (var i = 0; i < cards.length; i++) {
+        var title = cards[i].querySelector('.card-title');
+        if (title.innerText.toUpperCase().indexOf(filter) > -1) {
+            cards[i].style.display = '';
+            found = true;
+        } else {
+            cards[i].style.display = 'none';
         }
--->
+    }
+
+    if (found) {
+        noResultsMessage.style.display = 'none';
+    } else {
+        noResultsMessage.style.display = '';
+    }
+}
+</script>
+
+<script>
+    function filterByType() {
+        var typeSelect = document.getElementById('typeSelect');
+        var selectedType = typeSelect.value.toUpperCase();
+        var pokemonList = document.getElementById('pokemonList');
+        var cards = pokemonList.getElementsByClassName('card-item');
+        var noResultsMessage = document.getElementById('noResultsMessage');
+
+        var found = false;
+
+        for (var i = 0; i < cards.length; i++) {
+            var types = cards[i].querySelector('.card-types');
+            var typeTags = types.getElementsByTagName('span');
+            var showCard = false;
+
+            for (var j = 0; j < typeTags.length; j++) {
+                var type = typeTags[j].innerText.toUpperCase();
+                if (selectedType === '' || type === selectedType) {
+                    showCard = true;
+                    break;
+                }
+            }
+
+            if (showCard) {
+                cards[i].style.display = '';
+                found = true;
+            } else {
+                cards[i].style.display = 'none';
+            }
+        }
+
+        if (found) {
+            noResultsMessage.style.display = 'none';
+        } else {
+            noResultsMessage.style.display = '';
+        }
+    }
+</script>
