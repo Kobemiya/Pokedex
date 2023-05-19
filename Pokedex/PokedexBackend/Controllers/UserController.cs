@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using PokedexBackend.Controllers.RequestModels;
+using PokedexBackend.Controllers.ResponseModels;
 using PokedexBackend.DataAccess.Repositories;
 using PokedexBackend.Dbo;
 
@@ -18,14 +20,14 @@ public class UserController : ControllerBase
     }
 
     [HttpGet]
-    [ProducesResponseType(typeof(User[]), 200)]
+    [ProducesResponseType(typeof(UserResponse[]), 200)]
     public async Task<IActionResult> Get()
     {
         return Ok(await _usersRepo.GetAll());
     }
 
     [HttpGet("{id}")]
-    [ProducesResponseType(typeof(User), 200)]
+    [ProducesResponseType(typeof(UserResponse), 200)]
     [ProducesResponseType(404)]
     public async Task<IActionResult> Get(int id)
     {
@@ -34,21 +36,20 @@ public class UserController : ControllerBase
     }
 
     [HttpPost]
-    [ProducesResponseType(typeof(User), 200)]
+    [ProducesResponseType(typeof(UserResponse), 200)]
     [ProducesResponseType(400)]
-    public async Task<IActionResult> Post([FromBody] User user)
+    public async Task<IActionResult> Post([FromBody] UserRequest user)
     {
-        User? newUser = await _usersRepo.Insert(user);
+        User? newUser = await _usersRepo.Insert(user.toDbo());
         return newUser == null ? BadRequest() : Ok(newUser);
     }
 
     [HttpPut("{id}")]
-    [ProducesResponseType(typeof(User), 200)]
+    [ProducesResponseType(typeof(UserResponse), 200)]
     [ProducesResponseType(400)]
-    public async Task<IActionResult> Put(int id, [FromBody] User user)
+    public async Task<IActionResult> Put(int id, [FromBody] UserRequest user)
     {
-        user.Id = id;
-        User? newUser = await _usersRepo.Update(user);
+        User? newUser = await _usersRepo.Update(user.toDbo(id));
         return newUser == null ? BadRequest() : Ok(newUser);
     }
 

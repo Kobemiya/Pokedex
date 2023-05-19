@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using PokedexBackend.Controllers.RequestModels;
+using PokedexBackend.Controllers.ResponseModels;
 using PokedexBackend.DataAccess.Repositories;
 using PokedexBackend.Dbo;
 
@@ -18,14 +20,14 @@ public class AttackController : ControllerBase
     }
 
     [HttpGet]
-    [ProducesResponseType(typeof(Attack[]), 200)]
+    [ProducesResponseType(typeof(AttackResponse[]), 200)]
     public async Task<IActionResult> Get()
     {
         return Ok(await _attacksRepo.GetAll());
     }
 
     [HttpGet("{id}")]
-    [ProducesResponseType(typeof(Attack), 200)]
+    [ProducesResponseType(typeof(AttackResponse), 200)]
     [ProducesResponseType(404)]
     public async Task<IActionResult> Get(int id)
     {
@@ -34,21 +36,20 @@ public class AttackController : ControllerBase
     }
 
     [HttpPost]
-    [ProducesResponseType(typeof(Attack), 200)]
+    [ProducesResponseType(typeof(AttackResponse), 200)]
     [ProducesResponseType(400)]
-    public async Task<IActionResult> Post([FromBody] Attack attack)
+    public async Task<IActionResult> Post([FromBody] AttackRequest attack)
     {
-        Attack? newAttack = await _attacksRepo.Insert(attack);
+        Attack? newAttack = await _attacksRepo.Insert(attack.toDbo());
         return newAttack == null ? BadRequest() : Ok(newAttack);
     }
 
     [HttpPut("{id}")]
-    [ProducesResponseType(typeof(Attack), 200)]
+    [ProducesResponseType(typeof(AttackResponse), 200)]
     [ProducesResponseType(400)]
-    public async Task<IActionResult> Put(int id, [FromBody] Attack attack)
+    public async Task<IActionResult> Put(int id, [FromBody] AttackRequest attack)
     {
-        attack.Id = id;
-        Attack? newAttack = await _attacksRepo.Update(attack);
+        Attack? newAttack = await _attacksRepo.Update(attack.toDbo(id));
         return newAttack == null ? BadRequest() : Ok(newAttack);
     }
 

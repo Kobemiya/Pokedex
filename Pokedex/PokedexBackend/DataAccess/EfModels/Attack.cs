@@ -1,4 +1,7 @@
-﻿namespace PokedexBackend.DataAccess.EfModels;
+﻿using System;
+using System.Collections.Generic;
+
+namespace PokedexBackend.DataAccess.EfModels;
 
 public partial class Attack : IModelWithId
 {
@@ -11,4 +14,6 @@ public partial class Attack : IModelWithId
     public string Description { get; set; } = null!;
 
     public int Accuracy { get; set; }
+
+    public virtual ICollection<Pokemon> Pokemons { get; set; } = new List<Pokemon>();
 }

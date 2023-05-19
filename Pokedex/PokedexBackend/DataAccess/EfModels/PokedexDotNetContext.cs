@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
 
 namespace PokedexBackend.DataAccess.EfModels;
 
@@ -14,10 +16,6 @@ public partial class PokedexDotNetContext : DbContext
     }
 
     public virtual DbSet<Attack> Attacks { get; set; }
-
-    public virtual DbSet<AttacksPokemon> AttacksPokemons { get; set; }
-
-    public virtual DbSet<Favorite> Favorites { get; set; }
 
     public virtual DbSet<Pokemon> Pokemons { get; set; }
 
@@ -42,44 +40,6 @@ public partial class PokedexDotNetContext : DbContext
                 .HasMaxLength(30)
                 .IsUnicode(false)
                 .HasColumnName("name");
-        });
-
-        modelBuilder.Entity<AttacksPokemon>(entity =>
-        {
-            entity
-                .HasNoKey()
-                .ToTable("Attacks_Pokemons");
-
-            entity.Property(e => e.AttackId).HasColumnName("attack_id");
-            entity.Property(e => e.PokemonId).HasColumnName("pokemon_id");
-
-            entity.HasOne(d => d.Attack).WithMany()
-                .HasForeignKey(d => d.AttackId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Attacks_AttacksPokemons");
-
-            entity.HasOne(d => d.Pokemon).WithMany()
-                .HasForeignKey(d => d.PokemonId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Pokemons_AttacksPokemons");
-        });
-
-        modelBuilder.Entity<Favorite>(entity =>
-        {
-            entity.HasNoKey();
-
-            entity.Property(e => e.PokemonId).HasColumnName("pokemon_id");
-            entity.Property(e => e.UserId).HasColumnName("user_id");
-
-            entity.HasOne(d => d.Pokemon).WithMany()
-                .HasForeignKey(d => d.PokemonId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Pokemons_Favorites");
-
-            entity.HasOne(d => d.User).WithMany()
-                .HasForeignKey(d => d.UserId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Users_Favorites");
         });
 
         modelBuilder.Entity<Pokemon>(entity =>
@@ -111,6 +71,40 @@ public partial class PokedexDotNetContext : DbContext
                 .HasMaxLength(10)
                 .IsFixedLength()
                 .HasColumnName("type_2");
+
+            entity.HasMany(d => d.Attacks).WithMany(p => p.Pokemons)
+                .UsingEntity<Dictionary<string, object>>(
+                    "AttacksPokemon",
+                    r => r.HasOne<Attack>().WithMany()
+                        .HasForeignKey("AttackId")
+                        .HasConstraintName("FK_Attacks_AttacksPokemons"),
+                    l => l.HasOne<Pokemon>().WithMany()
+                        .HasForeignKey("PokemonId")
+                        .HasConstraintName("FK_Pokemons_AttacksPokemons"),
+                    j =>
+                    {
+                        j.HasKey("PokemonId", "AttackId");
+                        j.ToTable("Attacks_Pokemons");
+                        j.IndexerProperty<long>("PokemonId").HasColumnName("pokemon_id");
+                        j.IndexerProperty<long>("AttackId").HasColumnName("attack_id");
+                    });
+
+            entity.HasMany(d => d.Users).WithMany(p => p.Pokemons)
+                .UsingEntity<Dictionary<string, object>>(
+                    "Favorite",
+                    r => r.HasOne<User>().WithMany()
+                        .HasForeignKey("UserId")
+                        .HasConstraintName("FK_Users_Favorites"),
+                    l => l.HasOne<Pokemon>().WithMany()
+                        .HasForeignKey("PokemonId")
+                        .HasConstraintName("FK_Pokemons_Favorites"),
+                    j =>
+                    {
+                        j.HasKey("PokemonId", "UserId");
+                        j.ToTable("Favorites");
+                        j.IndexerProperty<long>("PokemonId").HasColumnName("pokemon_id");
+                        j.IndexerProperty<long>("UserId").HasColumnName("user_id");
+                    });
         });
 
         modelBuilder.Entity<User>(entity =>
