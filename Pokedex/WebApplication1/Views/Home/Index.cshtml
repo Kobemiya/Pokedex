@@ -2,7 +2,70 @@
     ViewData["Title"] = "Home Page";
 }
 
+@{
+    // Mock data 
+    var pokemons = new List<(string ImageUrl, string Name, List<string> Types)>
+    {
+        ("/Screenshot_2.jpg", "Pokemon 1", new List<string>{"Eau", "Herbe"}),
+        ("/Screenshot_2.jpg", "Pokemon 2", new List<string>{"Feu"}),
+        ("/Screenshot_2.jpg", "Pokemon 3", new List<string>{"Eau", "Feu"}),
+        ("/Screenshot_2.jpg", "Pokemon 4", new List<string>{"Eau"}),
+        ("/Screenshot_2.jpg", "Pokemon 5", new List<string>{"Feu", "Herbe"}),
+        ("/Screenshot_2.jpg", "Pokemon 6", new List<string>{"Feu"}),
+        ("/Screenshot_2.jpg", "Pokemon 7", new List<string>{"Herbe"}),
+    };
+}
+
+<style>
+    .custom-padding {
+        padding: 5px;
+    }
+    .card-types {
+        display: flex;
+        flex-wrap: wrap;
+        margin-top: 10px;
+    }
+    .card-types .Eau {
+        background-color: blue;
+    }
+    .card-types .Herbe {
+        background-color: green;
+    }
+    .card-types .Feu {
+        background-color: red;
+    }
+    .card-types span {
+        margin-right: 10px;
+        padding: 5px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        color: white;
+    }
+</style>
+
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <h1 class="display-4">Bienvenue sur le Pokédex !</h1>
+    <p>La liste qui recense les Pokémons existants.</p>
+</div>
+
+<div class="container">
+    <div class="row">
+        @foreach (var pokemon in pokemons)
+        {
+            <div class="col-md-4 custom-padding">
+                <div class="card">
+                    <img src="@pokemon.ImageUrl" class="card-img-top" alt="Pokemon Image">
+                    <div class="card-body">
+                        <h5 class="card-title">@pokemon.Name</h5>
+                        <div class="card-types">
+                            @foreach (var type in pokemon.Types)
+                            {
+                                <span class="@type">@type</span>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
 </div>
