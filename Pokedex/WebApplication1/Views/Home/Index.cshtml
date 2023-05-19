@@ -6,13 +6,13 @@
     // Mock data 
     var pokemons = new List<(string ImageUrl, string Name, List<string> Types)>
     {
-        ("/Screenshot_2.jpg", "Pokemon 1", new List<string>{"Eau", "Herbe"}),
-        ("/Screenshot_2.jpg", "Pokemon 2", new List<string>{"Feu"}),
-        ("/Screenshot_2.jpg", "Pokemon 3", new List<string>{"Eau", "Feu"}),
-        ("/Screenshot_2.jpg", "Pokemon 4", new List<string>{"Eau"}),
-        ("/Screenshot_2.jpg", "Pokemon 5", new List<string>{"Feu", "Herbe"}),
-        ("/Screenshot_2.jpg", "Pokemon 6", new List<string>{"Feu"}),
-        ("/Screenshot_2.jpg", "Pokemon 7", new List<string>{"Herbe"}),
+        ("/Screenshot_2.jpg", "Pokémon 1", new List<string>{"Eau", "Herbe"}),
+        ("/Screenshot_2.jpg", "Pokémon 2", new List<string>{"Feu"}),
+        ("/Screenshot_2.jpg", "Pokémon 3", new List<string>{"Eau", "Feu"}),
+        ("/Screenshot_2.jpg", "Pokémon 4", new List<string>{"Eau"}),
+        ("/Screenshot_2.jpg", "Pokémon 5", new List<string>{"Feu", "Herbe"}),
+        ("/Screenshot_2.jpg", "Pokémon 6", new List<string>{"Feu"}),
+        ("/Screenshot_2.jpg", "Pokémon 7", new List<string>{"Herbe"}),
     };
 }
 
@@ -50,9 +50,14 @@
 
 <div class="container">
     <div class="row">
+        <div class="col-md-12 mb-4">
+            <input id="searchInput" type="text" placeholder="Rechercher..." oninput="searchPokemon()" class="form-control">
+        </div>
+    </div>
+    <div id="pokemonList" class="row">
         @foreach (var pokemon in pokemons)
         {
-            <div class="col-md-4 custom-padding">
+            <div class="col-md-4 custom-padding card-item">
                 <div class="card">
                     <img src="@pokemon.ImageUrl" class="card-img-top" alt="Pokemon Image">
                     <div class="card-body">
@@ -68,4 +73,38 @@
             </div>
         }
     </div>
+    <div id="noResultsMessage" class="row" style="display: none;">
+        <div class="col-md-12">
+            <p>Aucun Pokémon ne correspond à cette recherche.</p>
+        </div>
+    </div>
 </div>
+
+
+<script>
+function searchPokemon() {
+    var input = document.getElementById('searchInput');
+    var filter = input.value.toUpperCase();
+    var pokemonList = document.getElementById('pokemonList');
+    var cards = pokemonList.getElementsByClassName('card-item');
+    var noResultsMessage = document.getElementById('noResultsMessage');
+
+    var found = false;
+
+    for (var i = 0; i < cards.length; i++) {
+        var title = cards[i].querySelector('.card-title');
+        if (title.innerText.toUpperCase().indexOf(filter) > -1) {
+            cards[i].style.display = '';
+            found = true;
+        } else {
+            cards[i].style.display = 'none';
+        }
+    }
+
+    if (found) {
+        noResultsMessage.style.display = 'none';
+    } else {
+        noResultsMessage.style.display = '';
+    }
+}
+</script>
