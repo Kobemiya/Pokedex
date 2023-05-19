@@ -25,4 +25,6 @@ public class Pokemon : IObjectWithId
     public string Description { get; set; } = null!;
 
     public string? ImagePath { get; set; }
+
+    public virtual ICollection<Attack> Attacks { get; set; } = new List<Attack>();
 }

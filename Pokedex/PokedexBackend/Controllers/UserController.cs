@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using PokedexBackend.Controllers.RequestModels;
+using PokedexBackend.Controllers.ResponseModels;
 using PokedexBackend.DataAccess.Repositories;
 using PokedexBackend.Dbo;
+using System;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -18,38 +21,38 @@ public class UserController : ControllerBase
     }
 
     [HttpGet]
-    [ProducesResponseType(typeof(User[]), 200)]
+    [ProducesResponseType(typeof(UserResponse[]), 200)]
     public async Task<IActionResult> Get()
     {
-        return Ok(await _usersRepo.GetAll());
+        var users = await _usersRepo.GetAll("Pokemons");
+        return Ok(users.Select(UserResponse.fromDbo));
     }
 
     [HttpGet("{id}")]
-    [ProducesResponseType(typeof(User), 200)]
+    [ProducesResponseType(typeof(UserResponse), 200)]
     [ProducesResponseType(404)]
     public async Task<IActionResult> Get(int id)
     {
-        User? found = await _usersRepo.GetById(id);
-        return found == null ? NotFound() : Ok(found);
+        User? found = await _usersRepo.GetById(id, "Pokemons");
+        return found == null ? NotFound() : Ok(UserResponse.fromDbo(found));
     }
 
     [HttpPost]
-    [ProducesResponseType(typeof(User), 200)]
+    [ProducesResponseType(typeof(UserResponse), 200)]
     [ProducesResponseType(400)]
-    public async Task<IActionResult> Post([FromBody] User user)
+    public async Task<IActionResult> Post([FromBody] UserRequest user)
     {
-        User? newUser = await _usersRepo.Insert(user);
-        return newUser == null ? BadRequest() : Ok(newUser);
+        User? newUser = await _usersRepo.Insert(user.toDbo());
+        return newUser == null ? BadRequest() : Ok(UserResponse.fromDbo(newUser));
     }
 
     [HttpPut("{id}")]
-    [ProducesResponseType(typeof(User), 200)]
+    [ProducesResponseType(typeof(UserResponse), 200)]
     [ProducesResponseType(400)]
-    public async Task<IActionResult> Put(int id, [FromBody] User user)
+    public async Task<IActionResult> Put(int id, [FromBody] UserRequest user)
     {
-        user.Id = id;
-        User? newUser = await _usersRepo.Update(user);
-        return newUser == null ? BadRequest() : Ok(newUser);
+        User? newUser = await _usersRepo.Update(user.toDbo(id));
+        return newUser == null ? BadRequest() : Ok(UserResponse.fromDbo(newUser));
     }
 
     [HttpDelete("{id}")]
@@ -59,5 +62,23 @@ public class UserController : ControllerBase
     {
         bool success = await _usersRepo.Delete(id);
         return success ? NoContent() : Conflict();
+    }
+
+    [HttpPut("{id}/favorites/{pokemon_id}")]
+    [ProducesResponseType(204)]
+    [ProducesResponseType(404)]
+    public async Task<IActionResult> AddFavorite(int id, int pokemon_id)
+    {
+        bool success = await _usersRepo.AddFavorite(id, pokemon_id);
+        return success ? NoContent() : NotFound();
+    }
+
+    [HttpDelete("{id}/favorites/{pokemon_id}")]
+    [ProducesResponseType(204)]
+    [ProducesResponseType(404)]
+    public async Task<IActionResult> RemoveFavorite(int id, int pokemon_id)
+    {
+        bool success = await _usersRepo.RemoveFavorite(id, pokemon_id);
+        return success ? NoContent() : NotFound();
     }
 }

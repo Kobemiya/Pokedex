@@ -4,3 +4,4 @@ bin/
 obj/
 *.user
 Importer les journaux de schémas
+.dbmdl

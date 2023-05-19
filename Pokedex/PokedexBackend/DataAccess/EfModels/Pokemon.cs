@@ -1,4 +1,7 @@
-﻿namespace PokedexBackend.DataAccess.EfModels;
+﻿using System;
+using System.Collections.Generic;
+
+namespace PokedexBackend.DataAccess.EfModels;
 
 public partial class Pokemon : IModelWithId
 {
@@ -25,4 +28,8 @@ public partial class Pokemon : IModelWithId
     public string Description { get; set; } = null!;
 
     public string? ImagePath { get; set; }
+
+    public virtual ICollection<Attack> Attacks { get; set; } = new List<Attack>();
+
+    public virtual ICollection<User> Users { get; set; } = new List<User>();
 }
