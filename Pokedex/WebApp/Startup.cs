@@ -1,6 +1,6 @@
-﻿using WebApp.DataAccess;
-using WebApp.DataAccess.EfModels;
-using WebApp.DataAccess.Interfaces;
+﻿using PokedexBackend.DataAccess;
+using PokedexBackend.DataAccess.EfModels;
+using PokedexBackend.DataAccess.Repositories;
 
 namespace WebApp;
 
@@ -13,9 +13,8 @@ public static class Startup
         services.AddLogging();
         services.AddControllers();
         services.AddScoped<IPokemonsRepository, PokemonsRepository>();
-        services.AddScoped<IStatsRepository, StatsRepository>();
         services.AddEntityFrameworkSqlServer();
-        services.AddDbContext<PokedexContext>();
+        services.AddDbContext<PokedexDotNetContext>();
         services.AddAutoMapper(typeof(AutoMapperProfiles));
     }
     

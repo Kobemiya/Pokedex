@@ -3,7 +3,7 @@
 
 <div class="text-center">
     <h1 class="display-4">Bienvenue sur votre Pokedex</h1>
-    <p>Service permettant de lister vos pokémons, votre id de session : @(HttpContext.Session.GetString("id"))</p>
+    <p>Service permettant consulter la liste de Pokémons existant</p>
     <button type="submit">Ajouter un Pokémon !</button>
     <br/>
     <table class="table table-striped border">
@@ -12,21 +12,18 @@
             <th>Type</th>
             <th></th>
         </tr>
-        @foreach (var pokemon in await Model.RegisteredPokemons)
-        {
-            <tr>
-                <td>@Html.DisplayFor(s => pokemon.Url)</td>
-                <td>@Html.DisplayFor(s => pokemon.Hash)</td>
-                <td><button onclick="navigator.clipboard.writeText(window.location.href + '@(pokemon.Hash.TrimEnd())')">COPY</button></td>
-            </tr>
-        }
     </table>
 </div>
 
 
 <!--
-    <form method="post">
-        <input type="text" name="url"/>
-        <button type="submit">Add a new Pokemon !</button>
-    </form>
+<form method="post">
+    <input type="text" name="url"/>
+    <button type="submit">Add a new Pokemon !</button>
+</form>
+//faire appel à la db dans mes onpost etc
+        {
+            <tr>
+            </tr>
+        }
 -->

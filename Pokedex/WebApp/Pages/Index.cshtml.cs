@@ -1,8 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Collections;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.IdentityModel.Tokens;
-using WebApp.DataAccess.Dbo;
-using WebApp.DataAccess.Interfaces;
+using PokedexBackend.Dbo;
+using PokedexBackend.DataAccess.Repositories;
 
 namespace WebApp.Pages;
 
@@ -10,42 +11,35 @@ public class IndexModel : PageModel
 {
     private readonly ILogger<IndexModel> _logger;
     private readonly IPokemonsRepository _pokemonsRepo;
-    private readonly IStatsRepository _statsRepo;
 
-    public Task<IEnumerable<Pokemon>> RegisteredPokemons;
+    public IEnumerable RegisteredPokemons;
 
-    public IndexModel(ILogger<IndexModel> logger, IPokemonsRepository pokemonsRepo, IStatsRepository statsRepository)
+    public IndexModel(ILogger<IndexModel> logger, IPokemonsRepository pokemonsRepo)
     {
         _logger = logger;
         _pokemonsRepo = pokemonsRepo;
-        _statsRepo = statsRepository;
     }
 
     private string GenerateRandom() =>
         new(".....".Select(c => "abcedfghijklmnopqrstuvwxyz0123456789"[new Random().Next(36)]).ToArray());
     
-    public async Task<IActionResult> OnGet(string? hash)
+    public async Task<IActionResult> OnGet(long id)
     {
-        if (hash.IsNullOrEmpty())
+        if (id == 0)
         {
-            RegisteredPokemons = _pokemonsRepo.Get();
+            RegisteredPokemons = await _pokemonsRepo.GetAll();
             HttpContext.Session.SetString("id", GenerateRandom());
             return Page();
         }
-        
-        var found = _pokemonsRepo.GetByHash(hash!);
+
+        var found = _pokemonsRepo.GetById(id);
         if (found == null)
             return NotFound();
-        await _statsRepo.Insert(new Stat
-        {
-            Date = DateTime.Now,
-            IdUrl = found.Id
-        });
-        return Redirect(found.Url);
+        return Redirect(found.Result.Name);
     }
 
     public async Task OnPost()
-    {
+    {/*
         var hash = GenerateRandom();
         while (_pokemonsRepo.GetByHash(hash) != null)
             hash = GenerateRandom();
@@ -55,6 +49,6 @@ public class IndexModel : PageModel
             Hash = hash,
             SessionId = HttpContext.Session.GetString("id")!
         });
-        RegisteredPokemons = _pokemonsRepo.Get();
+        RegisteredPokemons = _pokemonsRepo.Get();*/
     }
 }
