@@ -62,10 +62,10 @@
     <Folder Include="dbo\Tables\" />
   </ItemGroup>
   <ItemGroup>
-    <Build Include="dbo\Tables\Pokemons.sql" />
     <Build Include="dbo\Tables\Attacks.sql" />
     <Build Include="dbo\Tables\Users.sql" />
     <Build Include="dbo\Tables\Favorites.sql" />
     <Build Include="dbo\Tables\Attacks_Pokemons.sql" />
+    <Build Include="dbo\Tables\Pokemons.sql" />
   </ItemGroup>
 </Project>
