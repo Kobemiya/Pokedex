@@ -1,18 +1,37 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using WebApp.Repositories;
 
-namespace WebApp.Pages;
-
-public class PrivacyModel : PageModel
+namespace WebApp.Pages
 {
-    private readonly ILogger<PrivacyModel> _logger;
-
-    public PrivacyModel(ILogger<PrivacyModel> logger)
+    public class LoginModel : PageModel
     {
-        _logger = logger;
-    }
+        private readonly UsersRepository _usersRepository;
+        public string username;
+        public string password;
 
-    public void OnGet()
-    {
+        public LoginModel(UsersRepository usersRepository)
+        {
+            _usersRepository = usersRepository;
+        }
+
+        public void OnGet()
+        {
+        }
+
+        public IActionResult OnPostLogin(string username, string password)
+        {
+            var user = _usersRepository.Authenticate(username, password);
+
+            if (user == null)
+            {
+                ModelState.AddModelError(string.Empty, "Invalid username or password.");
+                return Page();
+            }
+
+            Response.Cookies.Append("AuthCookie", user.Username);
+
+            return RedirectToPage("/");
+        }
     }
 }

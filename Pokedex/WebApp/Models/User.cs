@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using PokedexBackend.Dbo;
 
-namespace PokedexBackend.Dbo;
-
-public partial class User : IObjectWithId
+namespace WebApp.Pages
 {
-    public long Id { get; set; }
-
-    public string Username { get; set; } = null!;
-
-    public string Password { get; set; } = null!;
+    public class User : PokedexBackend.Dbo.User
+    {
+    }
 }
