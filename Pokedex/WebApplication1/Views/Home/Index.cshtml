@@ -53,6 +53,15 @@
         <div class="col-md-12 mb-4">
             <input id="searchInput" type="text" placeholder="Rechercher..." oninput="searchPokemon()" class="form-control">
         </div>
+        <div class="col-md-12 mb-4">
+            <label for="typeSelect">Filter par type :</label>
+            <select id="typeSelect" onchange="filterByType()">
+                <option value="">Sélectionnez un type...</option>
+                <option value="Eau">Eau</option>
+                <option value="Herbe">Herbe</option>
+                <option value="Feu">Feu</option>
+            </select>
+        </div>
     </div>
     <div id="pokemonList" class="row">
         @foreach (var pokemon in pokemons)
@@ -107,4 +116,43 @@ function searchPokemon() {
         noResultsMessage.style.display = '';
     }
 }
+</script>
+
+<script>
+    function filterByType() {
+        var typeSelect = document.getElementById('typeSelect');
+        var selectedType = typeSelect.value.toUpperCase();
+        var pokemonList = document.getElementById('pokemonList');
+        var cards = pokemonList.getElementsByClassName('card-item');
+        var noResultsMessage = document.getElementById('noResultsMessage');
+
+        var found = false;
+
+        for (var i = 0; i < cards.length; i++) {
+            var types = cards[i].querySelector('.card-types');
+            var typeTags = types.getElementsByTagName('span');
+            var showCard = false;
+
+            for (var j = 0; j < typeTags.length; j++) {
+                var type = typeTags[j].innerText.toUpperCase();
+                if (selectedType === '' || type === selectedType) {
+                    showCard = true;
+                    break;
+                }
+            }
+
+            if (showCard) {
+                cards[i].style.display = '';
+                found = true;
+            } else {
+                cards[i].style.display = 'none';
+            }
+        }
+
+        if (found) {
+            noResultsMessage.style.display = 'none';
+        } else {
+            noResultsMessage.style.display = '';
+        }
+    }
 </script>

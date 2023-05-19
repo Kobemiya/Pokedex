@@ -1,0 +1,38 @@
+﻿@{
+    ViewData["Title"] = "Connectez-vous";
+}
+
+<div class="text-center">
+    <h1>@ViewData["Title"]</h1>
+
+    <p>Vous pourrez ainsi consulter vos favoris.</p>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12 mb-4">
+            <label for="username">Nom d'utilisateur :</label>
+            <input id="username" type="text" class="form-control">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 mb-4">
+            <label for="password">Mot de passe :</label>
+            <input id="password" type="password" class="form-control">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <button onclick="login()" class="btn btn-primary">Se connecter</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    function login() {
+        var username = document.getElementById('username').value;
+        var password = document.getElementById('password').value;
+
+        // Backend
+    }
+</script>
