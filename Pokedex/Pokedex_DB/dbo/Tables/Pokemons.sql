@@ -12,15 +12,7 @@
     [description] VARCHAR (200) NOT NULL,
     [image_path]  VARCHAR (100) NULL,
     CONSTRAINT [PK_Pokemons] PRIMARY KEY CLUSTERED ([id] ASC),
-    CONSTRAINT [CK_Pokemons_type_1] CHECK ([type_1]='???' OR [type_1]='Fairy' OR [type_1]='Steel' OR [type_1]='Dark' OR [type_1]='Ghost' OR [type_1]='Dragon' OR [type_1]='Bug' OR [type_1]='Ice' OR [type_1]='Rock' OR [type_1]='Ground' OR [type_1]='Poison' OR [type_1]='Flying' OR [type_1]='Psychic' OR [type_1]='Electric' OR [type_1]='Grass' OR [type_1]='Water' OR [type_1]='Fighting' OR [type_1]='Normal' OR [type_1]='Fire'),
-    CONSTRAINT [CK_Pokemons_type_2] CHECK ([type_2]='???' OR [type_2]='Fairy' OR [type_2]='Steel' OR [type_2]='Dark' OR [type_2]='Ghost' OR [type_2]='Dragon' OR [type_2]='Bug' OR [type_2]='Ice' OR [type_2]='Rock' OR [type_2]='Ground' OR [type_2]='Poison' OR [type_2]='Flying' OR [type_2]='Psychic' OR [type_2]='Electric' OR [type_2]='Grass' OR [type_2]='Water' OR [type_2]='Fighting' OR [type_2]='Normal' OR [type_2]='Fire')
+    CONSTRAINT [CK_Pokemons_Type1] CHECK ([type_1]='???' OR [type_1]='Fée' OR [type_1]='Acier' OR [type_1]='Ténèbres' OR [type_1]='Spectre' OR [type_1]='Dragon' OR [type_1]='Insecte' OR [type_1]='Glace' OR [type_1]='Roche' OR [type_1]='Sol' OR [type_1]='Poison' OR [type_1]='Vol' OR [type_1]='Psy' OR [type_1]='Electrique' OR [type_1]='Plante' OR [type_1]='Eau' OR [type_1]='Combat' OR [type_1]='Normal' OR [type_1]='Feu'),
+    CONSTRAINT [CK_Pokemons_Type2] CHECK ([type_2]='???' OR [type_2]='Fée' OR [type_2]='Acier' OR [type_2]='Ténèbres' OR [type_2]='Spectre' OR [type_2]='Dragon' OR [type_2]='Insecte' OR [type_2]='Glace' OR [type_2]='Roche' OR [type_2]='Sol' OR [type_2]='Poison' OR [type_2]='Vol' OR [type_2]='Psy' OR [type_2]='Electrique' OR [type_2]='Plante' OR [type_2]='Eau' OR [type_2]='Combat' OR [type_2]='Normal' OR [type_2]='Feu')
 );
-
-
-GO
-EXECUTE sp_addextendedproperty @name = N'MS_Description', @value = N'Checks if the 1st type of the pokemon is valid', @level0type = N'SCHEMA', @level0name = N'dbo', @level1type = N'TABLE', @level1name = N'Pokemons', @level2type = N'CONSTRAINT', @level2name = N'CK_Pokemons_type_1';
-
-
-GO
-EXECUTE sp_addextendedproperty @name = N'MS_Description', @value = N'Checks if the 2nd type of the pokemon is valid', @level0type = N'SCHEMA', @level0name = N'dbo', @level1type = N'TABLE', @level1name = N'Pokemons', @level2type = N'CONSTRAINT', @level2name = N'CK_Pokemons_type_2';
 
