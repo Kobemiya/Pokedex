@@ -1,4 +1,5 @@
 ﻿@page "{hash?}"
+@using Microsoft.AspNetCore.Mvc.TagHelpers
 @model IndexModel
 
 <!-- fixme ^-->
@@ -135,7 +136,7 @@
         </div>
     </div>
     <div id="pokemonList" class="row">
-        @foreach (var pokemon in Model.RegisteredPokemons)
+        @foreach (var pokemon in await Model.RegisteredPokemons)
         {
             <div class="col-md-4 card-item" style="padding: 5px">
                 <div class="card" style="border-radius: 5px">
@@ -154,7 +155,7 @@
             </div>
         }
     </div>
-    <div id="noResultsMessage" class="row" style="@(Model.RegisteredPokemons.Any() ? "display:none; padding: 5px" : "")">
+    <div id="noResultsMessage" class="row" style="@((await Model.RegisteredPokemons).Any() ? "display:none; padding: 5px" : "")">
         <p>Aucun Pokémon trouvé !</p>
     </div>
 </div>
