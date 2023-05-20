@@ -21,7 +21,7 @@ public class AttackRequest : IRequestModel<AttackRequest, Dbo.Attack>
         result.Description = Description;
         result.Damage = Damage;
         result.Accuracy = Accuracy;
-        result.Type = attack.Type;
+        result.Type = Type;
         return result;
     }
 }
