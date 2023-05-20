@@ -1,0 +1,167 @@
+﻿@page
+@model EditModel
+
+@{
+    ViewData["Title"] = "Modifier les informations";
+}
+
+<style>
+div.horizontal {
+  display: flex;
+  flex-direction: row;
+}
+
+div.vertical {
+  display: flex;
+  flex-direction: column;
+}
+
+div.vertical#left {
+  max-width: 550px;
+}
+
+.img-container img {
+  max-width: 100%;
+  height: auto;
+}
+
+div.vertical#right {
+  display: flex;
+  max-width: 550px;
+  height: auto;
+}
+
+div.horizontal#desc {
+  display: flex;
+  gap: 100px;
+}
+
+div.horizontal#stats {
+  display: flex;
+  width: 550px;
+  justify-content: space-between;
+  margin: 20px;
+}
+
+.name {
+  margin: 20px;
+}
+
+.attacks {
+  margin-top: 20px;
+}
+
+.attacks li {
+ margin-bottom: 5px;
+}
+
+.description {
+  margin-top: 5px;
+}
+</style>
+
+<div class="text-center">
+    <div class="horizontal" id="desc">
+        <div class="vertical" id="left">
+            <div class="img-container">
+                <img src="@Url.Content(Model.ImagePath)" alt="Pokemon Image" style="border-radius: 5px">
+            </div>
+        </div>
+
+        
+        <div class="vertical" id="right">
+            <form method="post">
+                <label for="name">Name</label><br>
+                  <input type="text" id="name" name="name" value=@Model.Name><br>
+                  <label for="description">Description</label><br>
+                  <input type="text" id="description" name="description" value=@Model.Description>
+                  <div class="horizontal">
+                      <span>
+                          <label for="typeOne">Type 1 :</label>
+                          <select id="typeOne" name="typeOne">
+                              <option value="Normal">Normal</option>
+                              <option value="Eau">Eau</option>
+                              <option value="Feu">Feu</option>
+                              <option value="Plante">Plante</option>
+                              <option value="Fée">Fée</option>
+                              <option value="Acier">Acier</option>
+                              <option value="Ténèbres">Ténèbres</option>
+                              <option value="Spectre">Spectre</option>
+                              <option value="Dragon">Dragon</option>
+                              <option value="Insecte">Insecte</option>
+                              <option value="Glace">Glace</option>
+                              <option value="Roche">Roche</option>
+                              <option value="Sol">Sol</option>
+                              <option value="Poison">Poison</option>
+                              <option value="Vol">Vol</option>
+                              <option value="Psy">Psy</option>
+                              <option value="Electrique">Electrique</option>
+                              <option value="Combat">Combat</option>
+                          </select>
+                      </span>
+                      <span>
+                          <label for="typeTwo">Type 2 :</label>
+                          <select id="typeTwo" name="typeTwo">
+                              <option value="">Aucun</option>
+                              <option value="Normal">Normal</option>
+                              <option value="Eau">Eau</option>
+                              <option value="Feu">Feu</option>
+                              <option value="Plante">Plante</option>
+                              <option value="Fée">Fée</option>
+                              <option value="Acier">Acier</option>
+                              <option value="Ténèbres">Ténèbres</option>
+                              <option value="Spectre">Spectre</option>
+                              <option value="Dragon">Dragon</option>
+                              <option value="Insecte">Insecte</option>
+                              <option value="Glace">Glace</option>
+                              <option value="Roche">Roche</option>
+                              <option value="Sol">Sol</option>
+                              <option value="Poison">Poison</option>
+                              <option value="Vol">Vol</option>
+                              <option value="Psy">Psy</option>
+                              <option value="Electrique">Electrique</option>
+                              <option value="Combat">Combat</option>
+                          </select>
+                      </span>
+                  </div>
+                  <div class="horizontal" id="stats">
+                      <div class="vertical" id="first">
+                          <div><label for="hp">PV</label>
+                              <input type="number" id="hp" name="hp" value=@Model.HP>
+                          </div>
+                          <div><label for="speed">Vitesse</label>
+                              <input type="number" id="speed" name="speed" value=@Model.Speed>
+                          </div>
+                      </div>
+                      <div class="vertical" id="second">
+                          <div><label for="attack">Attaque</label>
+                              <input type="number" id="attack" name="attack" value=@Model.Attack>
+                          </div>
+                          <div><label for="speAtt">Attaque spé.</label>
+                              <input type="number" id="speAtt" name="speAtt" value=@Model.SpeAttack>
+                          </div>
+                      </div>
+                      <div class="vertical" id="third">
+                          <div><label for="defense">Défense</label>
+                              <input type="number" id="defense" name="defense" value=@Model.Defense>
+                          </div>
+                          <div><label for="speDef">Défense spé.</label>
+                              <input type="number" id="speDef" name="speDef" value=@Model.SpeDefense>
+                          </div>
+                      </div>
+                  </div>
+                  <button type="submit">Enregistrer</button>
+            </form>
+            <div class="attacks">
+                Attaque(s)
+                <ul>
+                    @foreach (var attack in Model.Attacks)
+                    {
+                        <li> @attack.Name : @attack.Description. Type : @attack.Type - Dégâts : @attack.Damage - Précision : @attack.Accuracy <button type="button" onclick="deleteAttack(@attack.Id)">Supprimer</button></li>
+                    }
+                </ul>
+                <button type="button" disabled>Ajouter une attaque</button>
+            </div>
+        </div>
+    </div>
+</div>

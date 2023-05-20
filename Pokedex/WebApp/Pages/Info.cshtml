@@ -1,0 +1,116 @@
+﻿@page
+@model InfoModel
+
+@{
+    ViewData["Title"] = "Info";
+}
+
+<style>
+div.horizontal {
+  display: flex;
+  flex-direction: row;
+}
+
+div.vertical {
+  display: flex;
+  flex-direction: column;
+}
+
+div.vertical#left {
+  max-width: 550px;
+}
+
+.img-container img {
+  max-width: 100%;
+  height: auto;
+}
+
+div.vertical#right {
+  display: flex;
+  max-width: 550px;
+  height: auto;
+}
+
+div.horizontal#desc {
+  display: flex;
+  gap: 100px;
+}
+
+div.horizontal#stats {
+  display: flex;
+  width: 550px;
+  justify-content: space-between;
+  margin: 20px;
+}
+
+.name {
+  margin: 20px;
+}
+
+.attacks {
+  margin-top: 20px;
+}
+
+.attacks li {
+ margin-bottom: 5px;
+}
+
+.description {
+  margin-top: 5px;
+}
+</style>
+
+<div class="text-center">
+    <h1 class="name">@Model.Name#@Model.Id</h1>
+    <button type="button"><a asp-page="/Edit">Modifier les informations</a></button>
+    <div class="horizontal" id="desc">
+        <div class="vertical" id="left">
+            <div class="img-container">
+                <img src="@Url.Content(Model.ImagePath)" alt="Pokemon Image" style="border-radius: 5px">
+            </div>
+        </div>
+
+        <div class="vertical" id="right">
+            <div class="description">@Model.Description</div>
+            <div>
+                Pokémon de type : @Model.TypeOne
+                @if (Model.TypeTwo?.Length > 0)
+                {
+                    <span>, @Model.TypeTwo</span>
+                }
+            </div>
+            <!-- CHANGE INTO LINEAR TABLE -->
+            <div class="horizontal" id="stats">
+                <div class="vertical" id="first">
+                    <div>PV : @Model.HP</div>
+                    <div>Vitesse : @Model.Speed</div>
+                </div>
+                <div class="vertical" id="second">
+                    <div>Attaque : @Model.Attack</div>
+                    <div>Attaque spé. : @Model.SpeAttack</div>
+                </div>
+                <div class="vertical" id="third">
+                    <div>Défense : @Model.Defense</div>
+                    <div>Défense spé. : @Model.SpeDefense</div>
+                </div>
+            </div>
+            <!-- TURN INTO TABLE -->
+            <div class="attacks">
+                Attaque(s)
+                <ul>
+                    @foreach (var attack in Model.Attacks)
+                    {
+                        <li> @attack.Name : @attack.Description. Type : @attack.Type - Dégâts : @attack.Damage - Précision : @attack.Accuracy <button type="button" onclick="deleteAttack(@attack.Id)">Supprimer</button></li>
+                    }
+                </ul>
+                <button type="button" disabled>Ajouter une attaque</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function deleteAttack(id) {
+    console.log("Delete attack n°" + id);
+}
+</script>
