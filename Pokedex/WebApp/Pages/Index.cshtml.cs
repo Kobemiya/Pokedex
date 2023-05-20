@@ -58,7 +58,7 @@ namespace WebApp.Pages
             SearchQuery = searchQuery;
             
             var pokemons = await _pokemonsRepo.GetAll();
-            RegisteredPokemons = pokemons.Select(pokemon => new Pokemon
+            RegisteredPokemons = pokemons != null ? pokemons.Select(pokemon => new Pokemon
             {
                 Id = pokemon.Id,
                 Name = pokemon.Name,
@@ -72,9 +72,9 @@ namespace WebApp.Pages
                 Type2 = pokemon.Type2,
                 Description = pokemon.Description,
                 ImagePath = pokemon.ImagePath
-            });
+            }) : new List<Pokemon>();
             
-            if (!string.IsNullOrEmpty(SearchQuery) && !searchQuery.Equals("Tous les types"))
+            if (!string.IsNullOrEmpty(SearchQuery) && !searchQuery.Equals("Tous les types") && pokemons != null)
             {
                 RegisteredPokemons = pokemons.Select(pokemon => new Pokemon
                 {
@@ -101,7 +101,7 @@ namespace WebApp.Pages
             SelectedType = selectedType;
             
             var pokemons = await _pokemonsRepo.GetAll();
-            RegisteredPokemons = pokemons.Select(pokemon => new Pokemon
+            RegisteredPokemons = pokemons != null ? pokemons.Select(pokemon => new Pokemon
             {
                 Id = pokemon.Id,
                 Name = pokemon.Name,
@@ -115,7 +115,7 @@ namespace WebApp.Pages
                 Type2 = pokemon.Type2,
                 Description = pokemon.Description,
                 ImagePath = pokemon.ImagePath
-            });
+            }) : new List<Pokemon>();
 
             if (!string.IsNullOrEmpty(SelectedType))
             {
