@@ -8,7 +8,6 @@ namespace WebApp.Pages
     {
         private readonly HttpClient _httpClient;
         public IEnumerable<Pokemon> RegisteredPokemons { get; set; }
-        public Task<IEnumerable<User>> RegisteredUsers { get; set; }
 
         [BindProperty(SupportsGet = true)]
         public string SearchQuery { get; set; }
@@ -18,15 +17,6 @@ namespace WebApp.Pages
 
         [BindProperty(SupportsGet = true)]
         public bool ShowFavorites { get; set; }
-        
-        private async Task<IEnumerable<User>> FetchUsersList()
-        {
-            var usersResponse = await _httpClient.GetAsync("api/User");
-            if (!usersResponse.IsSuccessStatusCode)
-                return Enumerable.Empty<User>();
-            RegisteredUsers = usersResponse.Content.ReadFromJsonAsync<IEnumerable<User>>();
-            return await RegisteredUsers;
-        }
         
         public IndexModel(IConfiguration defaultConfig)
         {
@@ -42,18 +32,22 @@ namespace WebApp.Pages
                 RegisteredPokemons = Enumerable.Empty<Pokemon>();
         }
 
+        private async Task<User?> GetCurrentUser()
+        {
+            var userResponse = await _httpClient.GetAsync($"api/user/{HttpContext.Request.Cookies["user"]}");
+            if (!userResponse.IsSuccessStatusCode) return null;
+            return await userResponse.Content.ReadFromJsonAsync<User>();
+        }
+
         private async Task FilterPokemons()
         {
             SelectedType = HttpContext.Session.GetString("selectedType") ?? String.Empty;
             SearchQuery = HttpContext.Session.GetString("searchQuery") ?? String.Empty;
             ShowFavorites = HttpContext.Session.GetString("showFavorites") == "on";
 
-            if (ShowFavorites)
+            if (ShowFavorites && HttpContext.Request.Cookies.ContainsKey("user"))
             {
-                var userId = HttpContext.Request.Cookies["user"];
-                var users = await FetchUsersList();
-                var user = users.FirstOrDefault(u => u.Id.ToString() == userId);
-                
+                var user = await GetCurrentUser();
                 if (user != null)
                     RegisteredPokemons = RegisteredPokemons.Where(pokemon => user.Pokemons.Contains(pokemon.Id));
             }
@@ -76,7 +70,7 @@ namespace WebApp.Pages
         {
             HttpContext.Session.SetString("selectedType", String.Empty);
             HttpContext.Session.SetString("searchQuery", String.Empty);
-            HttpContext.Session.SetString("showFavorites", "false");
+            HttpContext.Session.SetString("showFavorites", String.Empty);
             await FetchPokemonList();
             return Page();
         }
