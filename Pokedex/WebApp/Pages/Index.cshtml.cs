@@ -1,17 +1,12 @@
-﻿using System.Collections.Generic;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using PokedexBackend.Dbo;
-using PokedexBackend.DataAccess.Repositories;
-using WebApp.MockRepositories;
-using WebApp.Pages;
 
 namespace WebApp.Pages
 {
     public class IndexModel : PageModel
     {
-        private readonly IPokemonsRepository _pokemonsRepo;
-        public IEnumerable<Pokemon> RegisteredPokemons { get; set; }
+        private readonly HttpClient _httpClient;
+        public Task<IEnumerable<Pokemon>> RegisteredPokemons { get; set; }
 
         [BindProperty(SupportsGet = true)]
         public string SearchQuery { get; set; }
@@ -21,109 +16,52 @@ namespace WebApp.Pages
 
         public bool ShowFavorites { get; set; }
 
-        /* Mock data
-        public IndexModel()
+        public IndexModel(IConfiguration defaultConfig)
         {
-            _pokemonsRepo = new MockPokemonsRepository();
-        }*/
-        public IndexModel(IPokemonsRepository pokemonsRepo)
+            _httpClient = new HttpClient { BaseAddress = new Uri(defaultConfig.GetValue<String>("apiHost")) };
+        }
+
+        private async Task FetchPokemonList()
         {
-            _pokemonsRepo = pokemonsRepo;
+            var pokemonsResponse = await _httpClient.GetAsync("api/Pokemon");
+            if (!pokemonsResponse.IsSuccessStatusCode) return;
+            RegisteredPokemons = pokemonsResponse.Content.ReadFromJsonAsync<IEnumerable<Pokemon>>();
+        }
+
+        private async Task FilterPokemons()
+        {
+            var pokemons = await RegisteredPokemons;
+            if (!string.IsNullOrEmpty(SelectedType) && !SelectedType.Equals("Tous les types"))
+            {
+                RegisteredPokemons = Task.FromResult(pokemons.Where(pokemon =>
+                    pokemon.Type1.Equals(SelectedType) || (pokemon.Type2 != null && pokemon.Type2.Equals(SelectedType))));
+            }
+            
+            if (!string.IsNullOrEmpty(SearchQuery))
+            {
+                RegisteredPokemons = Task.FromResult(pokemons
+                    .Where(pokemon => pokemon.Name.Contains(SearchQuery, StringComparison.OrdinalIgnoreCase)));
+            }
         }
 
         public async Task<IActionResult> OnGet()
         {
-            var pokemons = await _pokemonsRepo.GetAll();
-            RegisteredPokemons = pokemons != null ? pokemons.Select(pokemon => new Pokemon
-            {
-                Id = pokemon.Id,
-                Name = pokemon.Name,
-                Def = pokemon.Def,
-                DefSpe = pokemon.DefSpe,
-                Attack = pokemon.Attack,
-                AttackSpe = pokemon.AttackSpe,
-                Speed = pokemon.Speed,
-                Hp = pokemon.Hp,
-                Type1 = pokemon.Type1,
-                Type2 = pokemon.Type2,
-                Description = pokemon.Description,
-                ImagePath = pokemon.ImagePath
-            }) : Enumerable.Empty<Pokemon>();
-
+            await FetchPokemonList();
             return Page();
         }
 
-        public async Task<IActionResult> OnPostSearch([FromForm] string searchQuery)
+        public async Task OnPostSearch([FromForm] string searchQuery)
         {
             SearchQuery = searchQuery;
-            
-            var pokemons = await _pokemonsRepo.GetAll();
-            RegisteredPokemons = pokemons != null ? pokemons.Select(pokemon => new Pokemon
-            {
-                Id = pokemon.Id,
-                Name = pokemon.Name,
-                Def = pokemon.Def,
-                DefSpe = pokemon.DefSpe,
-                Attack = pokemon.Attack,
-                AttackSpe = pokemon.AttackSpe,
-                Speed = pokemon.Speed,
-                Hp = pokemon.Hp,
-                Type1 = pokemon.Type1,
-                Type2 = pokemon.Type2,
-                Description = pokemon.Description,
-                ImagePath = pokemon.ImagePath
-            }) : new List<Pokemon>();
-            
-            if (!string.IsNullOrEmpty(SearchQuery) && !searchQuery.Equals("Tous les types") && pokemons != null)
-            {
-                RegisteredPokemons = pokemons.Select(pokemon => new Pokemon
-                {
-                    Id = pokemon.Id,
-                    Name = pokemon.Name,
-                    Def = pokemon.Def,
-                    DefSpe = pokemon.DefSpe,
-                    Attack = pokemon.Attack,
-                    AttackSpe = pokemon.AttackSpe,
-                    Speed = pokemon.Speed,
-                    Hp = pokemon.Hp,
-                    Type1 = pokemon.Type1,
-                    Type2 = pokemon.Type2,
-                    Description = pokemon.Description,
-                    ImagePath = pokemon.ImagePath
-                }).Where(pokemon => pokemon.Name.Contains(SearchQuery, StringComparison.OrdinalIgnoreCase));
-            }
-
-            return Page();
+            await FetchPokemonList();
+            await FilterPokemons();
         }
         
-        public async Task<IActionResult> OnPostFilter([FromForm] string selectedType)
+        public async Task OnPostFilter([FromForm] string selectedType)
         {
             SelectedType = selectedType;
-            
-            var pokemons = await _pokemonsRepo.GetAll();
-            RegisteredPokemons = pokemons != null ? pokemons.Select(pokemon => new Pokemon
-            {
-                Id = pokemon.Id,
-                Name = pokemon.Name,
-                Def = pokemon.Def,
-                DefSpe = pokemon.DefSpe,
-                Attack = pokemon.Attack,
-                AttackSpe = pokemon.AttackSpe,
-                Speed = pokemon.Speed,
-                Hp = pokemon.Hp,
-                Type1 = pokemon.Type1,
-                Type2 = pokemon.Type2,
-                Description = pokemon.Description,
-                ImagePath = pokemon.ImagePath
-            }) : new List<Pokemon>();
-
-            if (!string.IsNullOrEmpty(SelectedType))
-            {
-                RegisteredPokemons = RegisteredPokemons.Where(pokemon =>
-                    pokemon.Type1.Equals(SelectedType) || (pokemon.Type2 != null && pokemon.Type2.Equals(SelectedType)));
-            }
-
-            return Page();
+            await FetchPokemonList();
+            await FilterPokemons();
         }
     }
 }

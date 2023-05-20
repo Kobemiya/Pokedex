@@ -42,7 +42,7 @@ public partial class PokedexDotNetContext : DbContext
                 .HasColumnName("name");
             entity.Property(e => e.Type)
                 .HasMaxLength(10)
-                .IsFixedLength()
+                .IsUnicode(false)
                 .HasColumnName("type");
         });
 
@@ -69,11 +69,11 @@ public partial class PokedexDotNetContext : DbContext
             entity.Property(e => e.Speed).HasColumnName("speed");
             entity.Property(e => e.Type1)
                 .HasMaxLength(10)
-                .IsFixedLength()
+                .IsUnicode(false)
                 .HasColumnName("type_1");
             entity.Property(e => e.Type2)
                 .HasMaxLength(10)
-                .IsFixedLength()
+                .IsUnicode(false)
                 .HasColumnName("type_2");
 
             entity.HasMany(d => d.Attacks).WithMany(p => p.Pokemons)
