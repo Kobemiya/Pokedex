@@ -21,16 +21,15 @@ namespace WebApp.Pages
 
         public bool ShowFavorites { get; set; }
 
-        public IndexModel(ILogger<IndexModel> logger)
+        /* Mock data
+        public IndexModel()
         {
             _pokemonsRepo = new MockPokemonsRepository();
-        }
-        /*
-        public IndexModel(ILogger<IndexModel> logger, IPokemonsRepository pokemonsRepo)
-        {
-            _logger = logger;
-            _pokemonsRepo = pokemonsRepo;
         }*/
+        public IndexModel(IPokemonsRepository pokemonsRepo)
+        {
+            _pokemonsRepo = pokemonsRepo;
+        }
 
         public async Task<IActionResult> OnGet()
         {
