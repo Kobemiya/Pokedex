@@ -100,6 +100,7 @@ Condition sur le projet obligatoire :
 - Sql Server 2022
 - Architecture : N-tiers
 - un déploiement sur un serveur web (APache, nginx, IIS) pas de code qui tourne sous visual studio
+
 Bonus : Toutes autres technologies Microsoft. Cependant l'utilisation de ces technologies devra être irréprochables
 
  
