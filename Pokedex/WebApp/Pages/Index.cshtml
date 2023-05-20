@@ -91,53 +91,49 @@
 </div>
 
 <div class="container">
-    <div class="row">
-        <div style="margin: 7px">
-            <form method="post" asp-page-handler="Search">
+    <form method="post" asp-page-handler="Search">
+        <div class="row">
+            <div style="margin: 7px">
                 <div class="input-group">
                     <input id="searchInput" type="text" placeholder="Rechercher..." class="form-control" value="@Model.SearchQuery" name="SearchQuery">
                     <button type="submit" class="btn btn-primary" style="margin-left: 5px;">Rechercher</button>
                 </div>
-            </form>
-        </div>
-        <div class="filter-select" style="display: flex; justify-content: space-between">
-            <form method="post" asp-page-handler="Filter">
+            </div>
+            <div class="filter-select" style="display: flex; justify-content: space-between">
                 <span>
                     <label for="typeSelect">Filter par type :</label>
                     <select id="typeSelect" name="SelectedType">
-                        <option value="">Sélectionnez un type...</option>
-                        <option value="">Tous les types</option>
-                        <option value="Eau">Eau</option>
-                        <option value="Feu">Feu</option>
-                        <option value="Plante">Plante</option>
-                        <option value="Fée">Fée</option>
-                        <option value="Acier">Acier</option>
-                        <option value="Ténèbres">Ténèbres</option>
-                        <option value="Spectre">Spectre</option>
-                        <option value="Dragon">Dragon</option>
-                        <option value="Insecte">Insecte</option>
-                        <option value="Glace">Glace</option>
-                        <option value="Roche">Roche</option>
-                        <option value="Sol">Sol</option>
-                        <option value="Poison">Poison</option>
-                        <option value="Vol">Vol</option>
-                        <option value="Psy">Psy</option>
-                        <option value="Electrique">Electrique</option>
-                        <option value="Combat">Combat</option>
-                        <option value="Normal">Normal</option>
+                        <!option value="" >Sélectionnez un type...</!option>
+                        <!option value="" @(Model.SelectedType == "" ? "selected" : "")> Tous les types</!option>
+                        <!option value="Eau" @(Model.SelectedType == "Eau" ? "selected" : "")>Eau</!option>
+                        <!option value="Feu" @(Model.SelectedType == "Feu" ? "selected" : "")>Feu</!option>
+                        <!option value="Plante" @(Model.SelectedType == "Plante" ? "selected" : "")>Plante</!option>
+                        <!option value="Fée" @(Model.SelectedType == "Fée" ? "selected" : "")>Fée</!option>
+                        <!option value="Acier" @(Model.SelectedType == "Acier" ? "selected" : "")>Acier</!option>
+                        <!option value="Ténèbres" @(Model.SelectedType == "Ténèbres" ? "selected" : "")>Ténèbres</!option>
+                        <!option value="Spectre" @(Model.SelectedType == "Spectre" ? "selected" : "")>Spectre</!option>
+                        <!option value="Dragon" @(Model.SelectedType == "Dragon" ? "selected" : "")>Dragon</!option>
+                        <!option value="Insecte" @(Model.SelectedType == "Insecte" ? "selected" : "")>Insecte</!option>
+                        <!option value="Glace" @(Model.SelectedType == "Glace" ? "selected" : "")>Glace</!option>
+                        <!option value="Roche" @(Model.SelectedType == "Roche" ? "selected" : "")>Roche</!option>
+                        <!option value="Sol" @(Model.SelectedType == "Sol" ? "selected" : "")>Sol</!option>
+                        <!option value="Poison" @(Model.SelectedType == "Poison" ? "selected" : "")>Poison</!option>
+                        <!option value="Vol" @(Model.SelectedType == "Vol" ? "selected" : "")>Vol</!option>
+                        <!option value="Psy" @(Model.SelectedType == "Psy" ? "selected" : "")>Psy</!option>
+                        <!option value="Electrique" @(Model.SelectedType == "Electrique" ? "selected" : "")>Electrique</!option>
+                        <!option value="Combat" @(Model.SelectedType == "Combat" ? "selected" : "")>Combat</!option>
+                        <!option value="Normal" @(Model.SelectedType == "Normal" ? "selected" : "")>Normal</!option>
                     </select>
                 </span>
-            </form>
-            <form method="post" asp-page-handler="Favorites">
                 <div class="form-check form-check-inline">
                     <input type="checkbox" id="favoriteCheckbox" name="ShowFavorites" @(Model.ShowFavorites ? "checked" : "")>
                     <label for="favoriteCheckbox">Ne montrer que les favoris</label>
                 </div>
-            </form>
+            </div>
         </div>
-    </div>
+    </form>
     <div id="pokemonList" class="row">
-        @foreach (var pokemon in await Model.RegisteredPokemons)
+        @foreach (var pokemon in Model.RegisteredPokemons)
         {
             <div class="col-md-4 card-item" style="padding: 5px">
                 <div class="card" style="border-radius: 5px">
@@ -151,12 +147,13 @@
                                 <span class="@pokemon.Type2">@pokemon.Type2</span>
                             }
                         </div>
+                        <button ></button>
                     </div>
                 </div>
             </div>
         }
     </div>
-    <div id="noResultsMessage" class="row" style="@((await Model.RegisteredPokemons).Any() ? "display:none; padding: 5px" : "")">
+    <div id="noResultsMessage" class="row" style="@(Model.RegisteredPokemons.Any() ? "display:none; padding: 5px" : "")">
         <p>Aucun Pokémon trouvé !</p>
     </div>
 </div>
