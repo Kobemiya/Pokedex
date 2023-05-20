@@ -1,0 +1,15 @@
+﻿@page
+@model WebApp.Pages.AccountModel
+
+@{
+    ViewData["Title"] = "Unknown";
+}
+
+<div class="text-center">
+    <h1>Hello @Model.Username !</h1>
+    <form method="post">
+        <button type="submit" asp-page-handler="Logout" class="btn btn-primary">Se Déconnecter</button>
+    </form>
+</div>
+
+
