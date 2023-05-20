@@ -14,4 +14,6 @@ public partial class Attack : IObjectWithId
     public string Description { get; set; } = null!;
 
     public int Accuracy { get; set; }
+
+    public string Type { get; set; } = null!;
 }

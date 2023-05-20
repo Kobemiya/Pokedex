@@ -11,6 +11,8 @@ public class AttackRequest : IRequestModel<AttackRequest, Dbo.Attack>
 
     public int Accuracy { get; set; }
 
+    public string Type { get; set; } = null!;
+
     public Dbo.Attack toDbo(long id = 0)
     {
         var result = new Dbo.Attack();
@@ -19,6 +21,7 @@ public class AttackRequest : IRequestModel<AttackRequest, Dbo.Attack>
         result.Description = Description;
         result.Damage = Damage;
         result.Accuracy = Accuracy;
+        result.Type = attack.Type;
         return result;
     }
 }
