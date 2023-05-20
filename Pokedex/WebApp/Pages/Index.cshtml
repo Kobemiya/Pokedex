@@ -85,7 +85,7 @@
 <div class="text-center">
     <h1>Bienvenue sur le Pokédex !</h1>
     <p>La liste qui recense les Pokémons existants.</p>
-    <button class="btn btn-primary mb-2" onclick="addPokemonPage()">J'ajoute un Pokémon !</button>
+    <button class="btn btn-primary" onclick="addPokemonPage()">J'ajoute un Pokémon !</button>
     <br/>
     <br/>
 </div>
@@ -128,8 +128,8 @@
                     </select>
                 </span>
                 <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="checkbox" id="favoriteCheckbox" name="ShowFavorites" @(Model.ShowFavorites ? "checked" : "")>
-                    <label class="form-check-label" for="favoriteCheckbox">Ne montrer que les favoris</label>
+                    <input type="checkbox" id="favoriteCheckbox" name="ShowFavorites" @(Model.ShowFavorites ? "checked" : "")>
+                    <label for="favoriteCheckbox">Ne montrer que les favoris</label>
                 </div>
             </form>
         </div>
@@ -155,9 +155,7 @@
         }
     </div>
     <div id="noResultsMessage" class="row" style="@(Model.RegisteredPokemons.Any() ? "display:none; padding: 5px" : "")">
-        <div class="col-md-12">
-            <p>Aucun Pokémon trouvé !</p>
-        </div>
+        <p>Aucun Pokémon trouvé !</p>
     </div>
 </div>
 
