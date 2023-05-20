@@ -1,0 +1,174 @@
+@page "{hash?}"
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model IndexModel
+
+<!-- fixme ^-->
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<style>
+    .card-types {
+        display: flex;
+        flex-wrap: wrap;
+        margin-top: 10px;
+    }
+    .card-types .Eau {
+        background-color: #4b4df7;
+    }
+    .card-types .Feu {
+        background-color: #fc0000;
+    }
+    .card-types .Plante {
+        background-color: #01a800;
+    }
+    .card-types .Fée {
+        background-color: #fda9d3;
+        color: black;
+    }
+    .card-types .Acier {
+        background-color: #bfbfbf;
+        color: black;
+    }
+    .card-types .Ténèbres {
+        background-color: #002142;
+    }
+    .card-types .Spectre {
+        background-color: #3d124f;
+    }
+    .card-types .Dragon {
+        background-color: #f0ac0e;
+        color: black;
+    }
+    .card-types .Insecte {
+        background-color: #aff905;
+        color: black;
+    }
+    .card-types .Glace {
+        background-color: #00fbfd;
+        color: black;
+    }
+    .card-types .Roche {
+        background-color: #717171;
+    }
+    .card-types .Sol {
+        background-color: #4b301f;
+    }
+    .card-types .Poison {
+        background-color: #817f04;
+    }
+    .card-types .Vol {
+        background-color: #5701ad;
+    }
+    .card-types .Psy {
+        background-color: #b500b4;
+    }
+    .card-types .Electrique {
+        background-color: #fdfd00;
+        color: black;
+    }
+    .card-types .Combat {
+        background-color: #c1491c;
+    }
+    .card-types .Normal {
+        background-color: #fcfcfc;
+        color: black;
+    }
+    .card-types span {
+        margin-right: 10px;
+        padding: 5px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        color: white;
+    }
+</style>
+
+<div class="text-center">
+    <h1>Bienvenue sur le Pokédex !</h1>
+    <p>La liste qui recense les Pokémons existants.</p>
+    <button class="btn btn-primary" onclick="addPokemonPage()">J'ajoute un Pokémon !</button>
+    <br/>
+    <br/>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div style="margin: 7px">
+            <form method="post" asp-page-handler="Search">
+                <div class="input-group">
+                    <input id="searchInput" type="text" placeholder="Rechercher..." class="form-control" value="@Model.SearchQuery" name="SearchQuery">
+                    <button type="submit" class="btn btn-primary" style="margin-left: 5px;">Rechercher</button>
+                </div>
+            </form>
+        </div>
+        <div class="filter-select">
+            <form method="post" asp-page-handler="Filter" style="display: flex; justify-content: space-between">
+                <span>
+                    <label for="typeSelect">Filter par type :</label>
+                    <select id="typeSelect" name="SelectedType">
+                        <option value="">Sélectionnez un type...</option>
+                        <option value="">Tous les types</option>
+                        <option value="Eau">Eau</option>
+                        <option value="Feu">Feu</option>
+                        <option value="Plante">Plante</option>
+                        <option value="Fée">Fée</option>
+                        <option value="Acier">Acier</option>
+                        <option value="Ténèbres">Ténèbres</option>
+                        <option value="Spectre">Spectre</option>
+                        <option value="Dragon">Dragon</option>
+                        <option value="Insecte">Insecte</option>
+                        <option value="Glace">Glace</option>
+                        <option value="Roche">Roche</option>
+                        <option value="Sol">Sol</option>
+                        <option value="Poison">Poison</option>
+                        <option value="Vol">Vol</option>
+                        <option value="Psy">Psy</option>
+                        <option value="Electrique">Electrique</option>
+                        <option value="Combat">Combat</option>
+                        <option value="Normal">Normal</option>
+                    </select>
+                </span>
+                <div class="form-check form-check-inline">
+                    <input type="checkbox" id="favoriteCheckbox" name="ShowFavorites" @(Model.ShowFavorites ? "checked" : "")>
+                    <label for="favoriteCheckbox">Ne montrer que les favoris</label>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div id="pokemonList" class="row">
+        @foreach (var pokemon in await Model.RegisteredPokemons)
+        {
+            <div class="col-md-4 card-item" style="padding: 5px">
+                <div class="card" style="border-radius: 5px">
+                    <img src="@Url.Content(pokemon.ImagePath)" class="card-img-top" alt="Pokemon Image" style="border-radius: 5px">
+                    <div class="card-body">
+                        <h5 class="card-title">@pokemon.Name</h5>
+                        <div class="card-types">
+                            <span class="@pokemon.Type1">@pokemon.Type1</span>
+                            @if (pokemon.Type2?.Length > 0)
+                            {
+                                <span class="@pokemon.Type2">@pokemon.Type2</span>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+    <div id="noResultsMessage" class="row" style="@((await Model.RegisteredPokemons).Any() ? "display:none; padding: 5px" : "")">
+        <p>Aucun Pokémon trouvé !</p>
+    </div>
+</div>
+
+
+<script>
+// todo : add the creation page
+function addPokemonPage() {
+    window.location.href = "@Url.Content("~/add-pokemon.html")";
+}
+
+document.getElementById("typeSelect").addEventListener("change", function() {
+    this.form.submit();
+});
+    
+</script>
