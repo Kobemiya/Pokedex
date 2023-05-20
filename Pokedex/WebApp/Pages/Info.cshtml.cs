@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace WebApp.Pages
 {
-    public class IndexModel : PageModel
+    public class InfoModel : PageModel
     {
         private readonly HttpClient _httpClient;
         public Task<IEnumerable<Pokemon>> RegisteredPokemons { get; set; }
