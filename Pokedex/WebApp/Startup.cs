@@ -12,10 +12,6 @@ public static class Startup
         services.AddSession();
         services.AddLogging();
         services.AddControllers();
-        services.AddScoped<IPokemonsRepository, PokemonsRepository>();
-        services.AddEntityFrameworkSqlServer();
-        services.AddDbContext<PokedexDotNetContext>();
-        services.AddAutoMapper(typeof(AutoMapperProfiles));
     }
     
     public static void ConfigureApplication(WebApplication app)
