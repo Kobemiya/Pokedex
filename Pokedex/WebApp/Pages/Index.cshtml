@@ -2,7 +2,6 @@
 @using Microsoft.AspNetCore.Mvc.TagHelpers
 @model IndexModel
 
-<!-- fixme ^-->
 @{
     ViewData["Title"] = "Home Page";
 }
@@ -101,8 +100,8 @@
                 </div>
             </form>
         </div>
-        <div class="filter-select">
-            <form method="post" asp-page-handler="Filter" style="display: flex; justify-content: space-between">
+        <div class="filter-select" style="display: flex; justify-content: space-between">
+            <form method="post" asp-page-handler="Filter">
                 <span>
                     <label for="typeSelect">Filter par type :</label>
                     <select id="typeSelect" name="SelectedType">
@@ -128,6 +127,8 @@
                         <option value="Normal">Normal</option>
                     </select>
                 </span>
+            </form>
+            <form method="post" asp-page-handler="Favorites">
                 <div class="form-check form-check-inline">
                     <input type="checkbox" id="favoriteCheckbox" name="ShowFavorites" @(Model.ShowFavorites ? "checked" : "")>
                     <label for="favoriteCheckbox">Ne montrer que les favoris</label>
@@ -168,6 +169,10 @@ function addPokemonPage() {
 }
 
 document.getElementById("typeSelect").addEventListener("change", function() {
+    this.form.submit();
+});
+
+document.getElementById("favoriteCheckbox").addEventListener("click", function() {
     this.form.submit();
 });
     
