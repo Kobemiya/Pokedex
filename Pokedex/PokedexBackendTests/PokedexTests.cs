@@ -88,7 +88,7 @@ namespace PokedexBackend.Tests.DataAccess.Repositories
             var result = await repository.Delete(pokemon.Id);
 
             Assert.True(result);
-            Assert.Null(repository);
+            Assert.IsEmpty(await repository.GetAll());
         }
         
         [Test]
@@ -104,7 +104,7 @@ namespace PokedexBackend.Tests.DataAccess.Repositories
             var result = await repository.Delete(attack.Id);
 
             Assert.True(result);
-            Assert.Null(repository);
+            Assert.IsEmpty(await repository.GetAll());
         }
         
         [Test]
@@ -120,7 +120,7 @@ namespace PokedexBackend.Tests.DataAccess.Repositories
             var result = await repository.Delete(user.Id);
 
             Assert.True(result);
-            Assert.Null(repository);
+            Assert.IsEmpty(await repository.GetAll());
         }
 
         [Test]
