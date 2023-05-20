@@ -12,24 +12,23 @@
 
 <div class="container">
     <div class="row">
-        <div class="col-md-12 mb-4">
-            <form method="post">
+        <form method="post">
+            <div class="col-md-12 mb-4">
                 <label for="username">Nom d'utilisateur :</label>
                 <input id="username" type="text" class="form-control" name="username">
-                <span asp-validation-for="username"></span>
-            </form>
-        </div>
-        <div class="row">
-            <div class="col-md-12 mb-4">
-                <label for="password">Mot de passe :</label>
-                <input id="password" type="password" class="form-control" name="password">
-                <span asp-validation-for="password"></span>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12">
-                <button type="submit" class="btn btn-primary">Se connecter</button>
+            <div class="row">
+                <div class="col-md-12 mb-4">
+                    <label for="password">Mot de passe :</label>
+                    <input id="password" type="password" class="form-control" name="password">
+                </div>
             </div>
-        </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <button type="submit" asp-page-handler="Login" class="btn btn-primary">Se connecter</button>
+                    <button type="submit" asp-page-handler="SignUp" class="btn btn-primary">S'inscrire</button>
+                </div>
+            </div>
+        </form>
     </div>
 </div>
