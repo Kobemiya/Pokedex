@@ -40,6 +40,10 @@ public partial class PokedexDotNetContext : DbContext
                 .HasMaxLength(30)
                 .IsUnicode(false)
                 .HasColumnName("name");
+            entity.Property(e => e.Type)
+                .HasMaxLength(10)
+                .IsFixedLength()
+                .HasColumnName("type");
         });
 
         modelBuilder.Entity<Pokemon>(entity =>
