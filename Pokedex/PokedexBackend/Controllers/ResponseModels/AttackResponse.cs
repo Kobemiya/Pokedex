@@ -12,6 +12,8 @@ public class AttackResponse : IResponseModel<AttackResponse, Dbo.Attack>
 
     public int Accuracy { get; set; }
 
+    public string Type { get; set; } = null!;
+
     public static AttackResponse fromDbo(Dbo.Attack attack)
     {
         var result = new AttackResponse();
@@ -20,6 +22,7 @@ public class AttackResponse : IResponseModel<AttackResponse, Dbo.Attack>
         result.Description = attack.Description;
         result.Damage = attack.Damage;
         result.Accuracy = attack.Accuracy;
+        result.Type = attack.Type;
         return result;
     }
 }

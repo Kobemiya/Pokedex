@@ -15,5 +15,7 @@ public partial class Attack : IModelWithId
 
     public int Accuracy { get; set; }
 
+    public string Type { get; set; } = null!;
+
     public virtual ICollection<Pokemon> Pokemons { get; set; } = new List<Pokemon>();
 }
