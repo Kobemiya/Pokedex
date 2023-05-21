@@ -1,33 +1,30 @@
-﻿using PokedexBackend.Dbo;
+﻿namespace WebApp.Pages;
 
-namespace WebApp.Pages
+public class Pokemon
 {
-    public class Pokemon
-    {
-        public long Id { get; set; }
+    public long Id { get; set; }
 
-        public string Name { get; set; } = null!;
+    public string Name { get; set; } = null!;
 
-        public int Def { get; set; }
+    public int Def { get; set; }
 
-        public int DefSpe { get; set; }
+    public int DefSpe { get; set; }
 
-        public int Attack { get; set; }
+    public int Attack { get; set; }
 
-        public int AttackSpe { get; set; }
+    public int AttackSpe { get; set; }
 
-        public int Speed { get; set; }
+    public int Speed { get; set; }
 
-        public int Hp { get; set; }
+    public int Hp { get; set; }
 
-        public string Type1 { get; set; } = null!;
+    public string Type1 { get; set; } = null!;
 
-        public string? Type2 { get; set; }
+    public string? Type2 { get; set; }
 
-        public string Description { get; set; } = null!;
+    public string Description { get; set; } = null!;
 
-        public string? ImagePath { get; set; }
+    public string? ImagePath { get; set; }
 
-        public ICollection<long> Attacks { get; set; } = new List<long>();
-    }
+    public ICollection<long> Attacks { get; set; } = new List<long>();
 }

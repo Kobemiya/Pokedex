@@ -1,4 +1,4 @@
-﻿@page
+﻿@page "{pokemonId:long}"
 @model EditModel
 
 @{
@@ -64,7 +64,7 @@ div.horizontal#stats {
     <div class="horizontal" id="desc">
         <div class="vertical" id="left">
             <div class="img-container">
-                <img src="@Url.Content(Model.ImagePath)" alt="Pokemon Image" style="border-radius: 5px">
+                <img src="@Model.CurrentPokemon.ImagePath" alt="Pokemon Image" style="border-radius: 5px">
             </div>
         </div>
 
@@ -72,9 +72,9 @@ div.horizontal#stats {
         <div class="vertical" id="right">
             <form method="post">
                 <label for="name">Name</label><br>
-                  <input type="text" id="name" name="name" value=@Model.Name><br>
+                  <input type="text" id="name" name="name" value=@Model.CurrentPokemon.Name><br>
                   <label for="description">Description</label><br>
-                  <input type="text" id="description" name="description" value=@Model.Description>
+                  <input type="text" id="description" name="description" value=@Model.CurrentPokemon.Description>
                   <div class="horizontal">
                       <span>
                           <label for="typeOne">Type 1 :</label>
@@ -127,26 +127,26 @@ div.horizontal#stats {
                   <div class="horizontal" id="stats">
                       <div class="vertical" id="first">
                           <div><label for="hp">PV</label>
-                              <input type="number" id="hp" name="hp" value=@Model.HP>
+                              <input type="number" id="hp" name="hp" value=@Model.CurrentPokemon.Hp>
                           </div>
                           <div><label for="speed">Vitesse</label>
-                              <input type="number" id="speed" name="speed" value=@Model.Speed>
+                              <input type="number" id="speed" name="speed" value=@Model.CurrentPokemon.Speed>
                           </div>
                       </div>
                       <div class="vertical" id="second">
                           <div><label for="attack">Attaque</label>
-                              <input type="number" id="attack" name="attack" value=@Model.Attack>
+                              <input type="number" id="attack" name="attack" value=@Model.CurrentPokemon.Attack>
                           </div>
                           <div><label for="speAtt">Attaque spé.</label>
-                              <input type="number" id="speAtt" name="speAtt" value=@Model.SpeAttack>
+                              <input type="number" id="speAtt" name="speAtt" value=@Model.CurrentPokemon.AttackSpe>
                           </div>
                       </div>
                       <div class="vertical" id="third">
                           <div><label for="defense">Défense</label>
-                              <input type="number" id="defense" name="defense" value=@Model.Defense>
+                              <input type="number" id="defense" name="defense" value=@Model.CurrentPokemon.Def>
                           </div>
                           <div><label for="speDef">Défense spé.</label>
-                              <input type="number" id="speDef" name="speDef" value=@Model.SpeDefense>
+                              <input type="number" id="speDef" name="speDef" value=@Model.CurrentPokemon.DefSpe>
                           </div>
                       </div>
                   </div>
@@ -155,9 +155,9 @@ div.horizontal#stats {
             <div class="attacks">
                 Attaque(s)
                 <ul>
-                    @foreach (var attack in Model.Attacks)
+                    @foreach (var attack in Model.RegisteredAttacks.Where(a => Model.CurrentPokemon.Attacks.Contains(a.Id)))
                     {
-                        <li> @attack.Name : @attack.Description. Type : @attack.Type - Dégâts : @attack.Damage - Précision : @attack.Accuracy <button type="button" onclick="deleteAttack(@attack.Id)">Supprimer</button></li>
+                        <li> @attack.Name : @attack.Description. Type : @attack.Type - Dégâts : @attack.Damage - Précision : @attack.Accuracy </li>
                     }
                 </ul>
                 <button type="button" disabled>Ajouter une attaque</button>
