@@ -136,38 +136,40 @@
     <div id="pokemonList" class="row">
         @foreach (var pokemon in Model.RegisteredPokemons)
         {
-            <div class="col-md-4 card-item" style="padding: 5px">
-                <div class="card" style="border-radius: 5px">
-                    <img src="@Url.Content(pokemon.ImagePath)" class="card-img-top" alt="Pokemon Image" style="border-radius: 5px">
-                    <div class="card-body">
-                        <div style="display: flex; align-items: center; justify-content: space-between;">
-                            <h5 class="card-title">@pokemon.Name</h5>
-                            <form method="post">
-                                <input type="hidden" name="pokemonId" value="@pokemon.Id">
-                                @if (Model.CurrentUser == null)
+            <a asp-page="/Info" asp-route-pokemonId="@pokemon.Id">
+                <div class="col-md-4 card-item" style="padding: 5px">
+                    <div class="card" style="border-radius: 5px">
+                        <img src="@Url.Content(pokemon.ImagePath)" class="card-img-top" alt="Pokemon Image" style="border-radius: 5px">
+                        <div class="card-body">
+                            <div style="display: flex; align-items: center; justify-content: space-between;">
+                                <h5 class="card-title" style="color: black;">@pokemon.Name</h5>
+                                <form method="post">
+                                    <input type="hidden" name="pokemonId" value="@pokemon.Id">
+                                    @if (Model.CurrentUser == null)
+                                    {
+                                        <img alt="disabled_favorite" src="resources/images/heart_disabled.png" style="width: 20px; height: 20px; z-index: 5">
+                                    }
+                                    else if (Model.CurrentUser.Pokemons.Contains(pokemon.Id))
+                                    {
+                                        <input type="image" asp-page-handler="RemoveFavorite" alt="favorite" src="resources/images/heart_full.png" style="width: 20px; height: 20px; z-index: 5">
+                                    }
+                                    else
+                                    {
+                                        <input type="image" asp-page-handler="AddFavorite" alt="not_favorite" src="resources/images/heart_empty.png" style="width: 20px; height: 20px; z-index: 5">
+                                    }
+                                </form>
+                            </div>
+                            <div class="card-types">
+                                <span class="@pokemon.Type1">@pokemon.Type1</span>
+                                @if (pokemon.Type2?.Length > 0)
                                 {
-                                    <img alt="disabled_favorite" src="resources/images/heart_disabled.png" style="width: 20px; height: 20px;">
+                                    <span class="@pokemon.Type2">@pokemon.Type2</span>
                                 }
-                                else if (Model.CurrentUser.Pokemons.Contains(pokemon.Id))
-                                {
-                                    <input type="image" asp-page-handler="RemoveFavorite" alt="favorite" src="resources/images/heart_full.png" style="width: 20px; height: 20px;">
-                                }
-                                else
-                                {
-                                    <input type="image" asp-page-handler="AddFavorite" alt="not_favorite" src="resources/images/heart_empty.png" style="width: 20px; height: 20px;">
-                                }
-                            </form>
-                        </div>
-                        <div class="card-types">
-                            <span class="@pokemon.Type1">@pokemon.Type1</span>
-                            @if (pokemon.Type2?.Length > 0)
-                            {
-                                <span class="@pokemon.Type2">@pokemon.Type2</span>
-                            }
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </a>
         }
     </div>
     <div id="noResultsMessage" class="row" style="@(Model.RegisteredPokemons.Any() ? "display:none; padding: 5px" : "")">

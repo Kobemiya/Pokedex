@@ -133,6 +133,9 @@ div.horizontal#stats {
                     }
                 </ul>
             </div>
+            <div style="display: flex; justify-content: center; margin-top: 20px;">
+                <button type="button" onclick="location.href='@Url.Page("Edit", new { pokemonId = Model.CurrentPokemon.Id })'">Modifier</button>
+            </div>
         </div>
     </div>
 </div>
