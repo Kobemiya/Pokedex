@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.VisualBasic.CompilerServices;
 
 namespace WebApp.Pages;
 
@@ -44,7 +45,7 @@ public class IndexModel : PageModel
         CurrentUser = await userResponse.Content.ReadFromJsonAsync<User>();
     }
 
-    private async Task FilterPokemons()
+    private void FilterPokemons()
     {
         SelectedType = HttpContext.Session.GetString("selectedType") ?? String.Empty;
         SearchQuery = HttpContext.Session.GetString("searchQuery") ?? String.Empty;
@@ -89,25 +90,25 @@ public class IndexModel : PageModel
         ShowFavorites = showFavorites == "on";
         await FetchPokemonList();
         await FetchCurrentUser();
-        await FilterPokemons();
+        FilterPokemons();
         return Page();
     }
 
-    public async Task<IActionResult> OnPostAddFavorite([FromForm] string pokemonId)
+    public async Task OnPostAddFavorite([FromForm] string pokemonId)
     {
         await FetchCurrentUser();
-        await _httpClient.PutAsync($"api/User/{CurrentUser?.Id}/favorites/{pokemonId}", null);
         await FetchPokemonList();
-        await FetchCurrentUser();
-        return Page();
+        var response = await _httpClient.PutAsync($"api/User/{CurrentUser?.Id}/favorites/{pokemonId}", null);
+        if (response.IsSuccessStatusCode)
+            CurrentUser?.Pokemons.Add(long.Parse(pokemonId));
     }
 
-    public async Task<IActionResult> OnPostRemoveFavorite([FromForm] string pokemonId)
+    public async Task OnPostRemoveFavorite([FromForm] string pokemonId)
     {
         await FetchCurrentUser();
-        await _httpClient.DeleteAsync($"api/User/{CurrentUser?.Id}/favorites/{pokemonId}");
         await FetchPokemonList();
-        await FetchCurrentUser();
-        return Page();
+        var response = await _httpClient.DeleteAsync($"api/User/{CurrentUser?.Id}/favorites/{pokemonId}");
+        if (response.IsSuccessStatusCode)
+            CurrentUser?.Pokemons.Remove(long.Parse(pokemonId));
     }
 }
