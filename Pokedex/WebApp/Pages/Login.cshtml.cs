@@ -29,7 +29,7 @@ namespace WebApp.Pages
 
         public async Task<IActionResult> OnPostSignup([FromForm] string username, string password)
         {
-            HttpContent body = new StringContent($"{{ \"username\":\"{username}\", \"password\":\"{password}\" }}", Encoding.UTF8, "application/json");
+            HttpContent body = new StringContent($$"""{ "username": "{{username}}", "password": "{{password}}" }""", Encoding.UTF8, "application/json");
             var userResponse = await _httpClient.PostAsync("api/User", body);
             if (!userResponse.IsSuccessStatusCode) return Page();
             
