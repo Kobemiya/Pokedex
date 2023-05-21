@@ -1,5 +1,4 @@
 ﻿using System.Text;
-using Azure;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using WebApp.Models;
@@ -12,7 +11,6 @@ public class EditModel : PageModel
     
     public Pokemon? CurrentPokemon;
     public IEnumerable<Attack> RegisteredAttacks;
-    public String SelectedAttackId;
 
     public EditModel(IConfiguration defaultConfig)
     {
