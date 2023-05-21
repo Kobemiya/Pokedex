@@ -80,6 +80,7 @@
         border-radius: 8px;
         color: white;
     }
+    
 </style>
 
 <div class="text-center">
@@ -147,7 +148,21 @@
                                 <span class="@pokemon.Type2">@pokemon.Type2</span>
                             }
                         </div>
-                        <button ></button>
+                        <form method="post">
+                            <input type="hidden" name="pokemonId" value="@pokemon.Id">
+                            @if (Model.CurrentUser == null)
+                            {
+                                <img alt="disabled_favorite" src="resources/images/heart_disabled.png"/>
+                            }
+                            else if (Model.CurrentUser.Pokemons.Contains(pokemon.Id))
+                            {
+                                <input type="image" asp-page-handler="RemoveFavorite" alt="favorite" src="resources/images/heart_full.png"/>
+                            }
+                            else
+                            {
+                                <input type="image" asp-page-handler="AddFavorite" alt="not_favorite" src="resources/images/heart_empty.png"/>
+                            }
+                        </form>
                     </div>
                 </div>
             </div>
