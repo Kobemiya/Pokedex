@@ -1,14 +1,17 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Runtime.InteropServices.JavaScript;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.IdentityModel.Tokens;
 
 namespace WebApp.Pages
 {
     public class IndexModel : PageModel
     {
         private readonly HttpClient _httpClient;
-        public Task<IEnumerable<Pokemon>> RegisteredPokemons { get; set; }
-        public Task<IEnumerable<User>> RegisteredUsers { get; set; }
+        [BindProperty(SupportsGet = true)]
+        public IEnumerable<Pokemon> RegisteredPokemons { get; set; }
+        
+        [BindProperty(SupportsGet = true)]
+        public User? CurrentUser { get; set; }
 
         [BindProperty(SupportsGet = true)]
         public string SearchQuery { get; set; }
@@ -19,83 +22,94 @@ namespace WebApp.Pages
         [BindProperty(SupportsGet = true)]
         public bool ShowFavorites { get; set; }
         
-        private async Task<IEnumerable<User>> FetchUsersList()
-        {
-            var usersResponse = await _httpClient.GetAsync("api/User");
-            if (!usersResponse.IsSuccessStatusCode)
-                return Enumerable.Empty<User>();
-            RegisteredUsers = usersResponse.Content.ReadFromJsonAsync<IEnumerable<User>>();
-            return await RegisteredUsers;
-        }
-        
         public IndexModel(IConfiguration defaultConfig)
         {
             _httpClient = new HttpClient { BaseAddress = new Uri(defaultConfig.GetValue<String>("apiHost")) };
         }
 
-        private async Task<IEnumerable<Pokemon>> FetchPokemonList()
+        private async Task FetchPokemonList()
         {
             var pokemonsResponse = await _httpClient.GetAsync("api/Pokemon");
-            if (!pokemonsResponse.IsSuccessStatusCode)
-                return Enumerable.Empty<Pokemon>();
-            RegisteredPokemons = pokemonsResponse.Content.ReadFromJsonAsync<IEnumerable<Pokemon>>();
-            return await RegisteredPokemons;
+            if (pokemonsResponse.IsSuccessStatusCode)
+                RegisteredPokemons = await pokemonsResponse.Content.ReadFromJsonAsync<IEnumerable<Pokemon>>();
+            else
+                RegisteredPokemons = Enumerable.Empty<Pokemon>();
         }
 
-        private async Task FilterPokemons(bool showFavorites)
+        private async Task FetchCurrentUser()
         {
-            var pokemons = await RegisteredPokemons;
-            
-            if (showFavorites)
+            CurrentUser = null;
+            if (!HttpContext.Request.Cookies.ContainsKey("user")) return;
+            var userResponse = await _httpClient.GetAsync($"api/user/{HttpContext.Request.Cookies["user"]}");
+            if (!userResponse.IsSuccessStatusCode) return; 
+            CurrentUser = await userResponse.Content.ReadFromJsonAsync<User>();
+        }
+
+        private async Task FilterPokemons()
+        {
+            SelectedType = HttpContext.Session.GetString("selectedType") ?? String.Empty;
+            SearchQuery = HttpContext.Session.GetString("searchQuery") ?? String.Empty;
+            ShowFavorites = HttpContext.Session.GetString("showFavorites") == "on";
+
+            if (ShowFavorites && CurrentUser != null)
             {
-                var userId = HttpContext.Request.Cookies["user"];
-                var users = await FetchUsersList();
-                var user = users.FirstOrDefault(u => u.Id.ToString() == userId);
-                
-                if (user != null)
-                {
-                    RegisteredPokemons = Task.FromResult(pokemons.Where(pokemon => user.Pokemons.Contains(pokemon.Id)));
-                }
+                RegisteredPokemons = RegisteredPokemons.Where(pokemon => CurrentUser.Pokemons.Contains(pokemon.Id));
             }
             
             if (!string.IsNullOrEmpty(SelectedType) && !SelectedType.Equals("Tous les types"))
             {
-                RegisteredPokemons = Task.FromResult(pokemons.Where(pokemon =>
-                    pokemon.Type1.Equals(SelectedType) || (pokemon.Type2 != null && pokemon.Type2.Equals(SelectedType))));
+                RegisteredPokemons = RegisteredPokemons
+                    .Where(pokemon => pokemon.Type1.Equals(SelectedType) ||
+                                      (pokemon.Type2 != null && pokemon.Type2.Equals(SelectedType)));
             }
             
             if (!string.IsNullOrEmpty(SearchQuery))
             {
-                RegisteredPokemons = Task.FromResult(pokemons
-                    .Where(pokemon => pokemon.Name.Contains(SearchQuery, StringComparison.OrdinalIgnoreCase)));
+                RegisteredPokemons = RegisteredPokemons
+                    .Where(pokemon => pokemon.Name.Contains(SearchQuery, StringComparison.OrdinalIgnoreCase));
             }
         }
 
         public async Task<IActionResult> OnGet()
         {
+            HttpContext.Session.SetString("selectedType", String.Empty);
+            HttpContext.Session.SetString("searchQuery", String.Empty);
+            HttpContext.Session.SetString("showFavorites", String.Empty);
             await FetchPokemonList();
+            await FetchCurrentUser();
             return Page();
         }
 
-        public async Task OnPostSearch([FromForm] string searchQuery)
+        public async Task<IActionResult> OnPostSearch([FromForm] string searchQuery, string selectedType, string showFavorites)
         {
+            HttpContext.Session.SetString("searchQuery", searchQuery ?? String.Empty);
+            HttpContext.Session.SetString("selectedType", selectedType ?? String.Empty);
+            HttpContext.Session.SetString("showFavorites", showFavorites ?? String.Empty);
             SearchQuery = searchQuery;
-            await FetchPokemonList();
-            await FilterPokemons(ShowFavorites);
-        }
-        
-        public async Task OnPostFilter([FromForm] string selectedType)
-        {
             SelectedType = selectedType;
+            ShowFavorites = showFavorites == "on";
             await FetchPokemonList();
-            await FilterPokemons(ShowFavorites);
+            await FetchCurrentUser();
+            await FilterPokemons();
+            return Page();
         }
-        
-        public async Task OnPostFavorites([FromForm] string showFavorites)
+
+        public async Task<IActionResult> OnPostAddFavorite([FromForm] string pokemonId)
         {
-            ShowFavorites = !showFavorites.IsNullOrEmpty();
+            await FetchCurrentUser();
+            await _httpClient.PutAsync($"api/User/{CurrentUser?.Id}/favorites/{pokemonId}", null);
             await FetchPokemonList();
-            await FilterPokemons(ShowFavorites);
+            await FetchCurrentUser();
+            return Page();
+        }
+
+        public async Task<IActionResult> OnPostRemoveFavorite([FromForm] string pokemonId)
+        {
+            await FetchCurrentUser();
+            await _httpClient.DeleteAsync($"api/User/{CurrentUser?.Id}/favorites/{pokemonId}");
+            await FetchPokemonList();
+            await FetchCurrentUser();
+            return Page();
         }
     }
 }
