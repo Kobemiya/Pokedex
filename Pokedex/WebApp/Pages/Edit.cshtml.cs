@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using Azure;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using WebApp.Models;
@@ -8,8 +9,10 @@ namespace WebApp.Pages;
 public class EditModel : PageModel
 {
     private readonly HttpClient _httpClient;
+    
     public Pokemon? CurrentPokemon;
     public IEnumerable<Attack> RegisteredAttacks;
+    public String SelectedAttackId;
 
     public EditModel(IConfiguration defaultConfig)
     {
@@ -38,7 +41,7 @@ public class EditModel : PageModel
         await FetchCurrentPokemon(pokemonId);
         await FetchAttacklist();
         if (CurrentPokemon == null)
-            return Redirect("Index");
+            return Redirect("~/Index");
         return Page();
     }
 
@@ -53,10 +56,45 @@ public class EditModel : PageModel
                    "}";
         HttpContent body = new StringContent(json, Encoding.UTF8, "application/json");
         var pokemonResponse = await _httpClient.PutAsync($"api/Pokemon/{pokemonId}", body);
-        
+
         if (!pokemonResponse.IsSuccessStatusCode)
+        {
+            await FetchCurrentPokemon(pokemonId);
+            await FetchAttacklist();
             return Page();
+        }
         
-        return Redirect($"Info/{pokemonId}"); 
+        return Redirect($"~/Info/{pokemonId}"); 
+    }
+
+    public async Task OnPostAddAttack(long pokemonId, string attackId)
+    {
+        await FetchCurrentPokemon(pokemonId);
+        await FetchAttacklist();
+        var response = await _httpClient.PutAsync($"api/Pokemon/{pokemonId}/attacks/{attackId}", null);
+        if (response.IsSuccessStatusCode && !(CurrentPokemon?.Attacks.Contains(long.Parse(attackId)) ?? true))
+            CurrentPokemon?.Attacks.Add(long.Parse(attackId));
+    }
+
+    public async Task OnPostRemoveAttack(long pokemonId, string attackId)
+    {
+        await FetchCurrentPokemon(pokemonId);
+        await FetchAttacklist();
+        var response = await _httpClient.DeleteAsync($"api/Pokemon/{pokemonId}/attacks/{attackId}");
+        if (response.IsSuccessStatusCode)
+            CurrentPokemon?.Attacks.Remove(long.Parse(attackId));
+    }
+
+    public async Task<IActionResult> OnPostDeletePokemon(long pokemonId)
+    {
+        var response = await _httpClient.DeleteAsync($"api/Pokemon/{pokemonId}");
+        if (response.IsSuccessStatusCode)
+        {
+            await FetchCurrentPokemon(pokemonId);
+            await FetchAttacklist();
+            return Page();
+        }
+        
+        return Redirect("~/Index");
     }
 }

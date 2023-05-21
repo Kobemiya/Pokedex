@@ -99,7 +99,7 @@ public class IndexModel : PageModel
         await FetchCurrentUser();
         await FetchPokemonList();
         var response = await _httpClient.PutAsync($"api/User/{CurrentUser?.Id}/favorites/{pokemonId}", null);
-        if (response.IsSuccessStatusCode)
+        if (response.IsSuccessStatusCode && !(CurrentUser?.Pokemons.Contains(long.Parse(pokemonId)) ?? true))
             CurrentUser?.Pokemons.Add(long.Parse(pokemonId));
     }
 
