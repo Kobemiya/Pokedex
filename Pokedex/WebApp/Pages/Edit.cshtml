@@ -70,7 +70,7 @@ div.horizontal#stats {
 
         
         <div class="vertical" id="right">
-            <form method="post">
+            <form method="post" asp-page-handler="Save">
                 <label for="name">Name</label><br>
                 <input type="text" id="name" name="name" value=@Model.CurrentPokemon.Name><br>
                 <label for="description">Description</label><br>
@@ -79,48 +79,48 @@ div.horizontal#stats {
                     <span>
                         <label for="typeOne">Type 1 :</label>
                         <select id="typeOne" name="typeOne">
-                            <option value="Normal">Normal</option>
-                            <option value="Eau">Eau</option>
-                            <option value="Feu">Feu</option>
-                            <option value="Plante">Plante</option>
-                            <option value="Fée">Fée</option>
-                            <option value="Acier">Acier</option>
-                            <option value="Ténèbres">Ténèbres</option>
-                            <option value="Spectre">Spectre</option>
-                            <option value="Dragon">Dragon</option>
-                            <option value="Insecte">Insecte</option>
-                            <option value="Glace">Glace</option>
-                            <option value="Roche">Roche</option>
-                            <option value="Sol">Sol</option>
-                            <option value="Poison">Poison</option>
-                            <option value="Vol">Vol</option>
-                            <option value="Psy">Psy</option>
-                            <option value="Electrique">Electrique</option>
-                            <option value="Combat">Combat</option>
+                            <!option value="Normal" @(Model.CurrentPokemon.Type1 == "Normal" ? "selected" : "")>Normal</!option>
+                            <!option value="Eau" @(Model.CurrentPokemon.Type1 == "Eau" ? "selected" : "")>Eau</!option>
+                            <!option value="Feu" @(Model.CurrentPokemon.Type1 == "Feu" ? "selected" : "")>Feu</!option>
+                            <!option value="Plante" @(Model.CurrentPokemon.Type1 == "Plante" ? "selected" : "")>Plante</!option>
+                            <!option value="Fée" @(Model.CurrentPokemon.Type1 == "Fée" ? "selected" : "")>Fée</!option>
+                            <!option value="Acier" @(Model.CurrentPokemon.Type1 == "Acier" ? "selected" : "")>Acier</!option>
+                            <!option value="Ténèbres" @(Model.CurrentPokemon.Type1 == "Ténèbres" ? "selected" : "")>Ténèbres</!option>
+                            <!option value="Spectre" @(Model.CurrentPokemon.Type1 == "Spectre" ? "selected" : "")>Spectre</!option>
+                            <!option value="Dragon" @(Model.CurrentPokemon.Type1 == "Dragon" ? "selected" : "")>Dragon</!option>
+                            <!option value="Insecte" @(Model.CurrentPokemon.Type1 == "Insecte" ? "selected" : "")>Insecte</!option>
+                            <!option value="Glace" @(Model.CurrentPokemon.Type1 == "Glace" ? "selected" : "")>Glace</!option>
+                            <!option value="Roche" @(Model.CurrentPokemon.Type1 == "Roche" ? "selected" : "")>Roche</!option>
+                            <!option value="Sol" @(Model.CurrentPokemon.Type1 == "Sol" ? "selected" : "")>Sol</!option>
+                            <!option value="Poison" @(Model.CurrentPokemon.Type1 == "Poison" ? "selected" : "")>Poison</!option>
+                            <!option value="Vol" @(Model.CurrentPokemon.Type1 == "Vol" ? "selected" : "")>Vol</!option>
+                            <!option value="Psy" @(Model.CurrentPokemon.Type1 == "Psy" ? "selected" : "")>Psy</!option>
+                            <!option value="Electrique" @(Model.CurrentPokemon.Type1 == "Electrique" ? "selected" : "")>Electrique</!option>
+                            <!option value="Combat" @(Model.CurrentPokemon.Type1 == "Combat" ? "selected" : "")>Combat</!option>
                         </select>
                     </span>
                     <span>
                         <label for="typeTwo">Type 2 :</label>
                         <select id="typeTwo" name="typeTwo">
-                            <option value="">Aucun</option>
-                            <option value="Normal">Normal</option>
-                            <option value="Eau">Eau</option>
-                            <option value="Feu">Feu</option>
-                            <option value="Plante">Plante</option>
-                            <option value="Fée">Fée</option>
-                            <option value="Acier">Acier</option>
-                            <option value="Ténèbres">Ténèbres</option>
-                            <option value="Spectre">Spectre</option>
-                            <option value="Dragon">Dragon</option>
-                            <option value="Insecte">Insecte</option>
-                            <option value="Glace">Glace</option>
-                            <option value="Roche">Roche</option>
-                            <option value="Sol">Sol</option>
-                            <option value="Poison">Poison</option>
-                            <option value="Vol">Vol</option>
-                            <option value="Psy">Psy</option>
-                            <option value="Electrique">Electrique</option>
-                            <option value="Combat">Combat</option>
+                            <!option value="" @(Model.CurrentPokemon.Type2 == "" ? "selected" : "")>Aucun</!option>
+                            <!option value="Normal" @(Model.CurrentPokemon.Type2 == "Normal" ? "selected" : "")>Normal</!option>
+                            <!option value="Eau" @(Model.CurrentPokemon.Type2 == "Eau" ? "selected" : "")>Eau</!option>
+                            <!option value="Feu" @(Model.CurrentPokemon.Type2 == "Feu" ? "selected" : "")>Feu</!option>
+                            <!option value="Plante" @(Model.CurrentPokemon.Type2 == "Plante" ? "selected" : "")>Plante</!option>
+                            <!option value="Fée" @(Model.CurrentPokemon.Type2 == "Fée" ? "selected" : "")>Fée</!option>
+                            <!option value="Acier" @(Model.CurrentPokemon.Type2 == "Acier" ? "selected" : "")>Acier</!option>
+                            <!option value="Ténèbres" @(Model.CurrentPokemon.Type2 == "Ténèbres" ? "selected" : "")>Ténèbres</!option>
+                            <!option value="Spectre" @(Model.CurrentPokemon.Type2 == "Spectre" ? "selected" : "")>Spectre</!option>
+                            <!option value="Dragon" @(Model.CurrentPokemon.Type2 == "Dragon" ? "selected" : "")>Dragon</!option>
+                            <!option value="Insecte" @(Model.CurrentPokemon.Type2 == "Insecte" ? "selected" : "")>Insecte</!option>
+                            <!option value="Glace" @(Model.CurrentPokemon.Type2 == "Glace" ? "selected" : "")>Glace</!option>
+                            <!option value="Roche" @(Model.CurrentPokemon.Type2 == "Roche" ? "selected" : "")>Roche</!option>
+                            <!option value="Sol" @(Model.CurrentPokemon.Type2 == "Sol" ? "selected" : "")>Sol</!option>
+                            <!option value="Poison" @(Model.CurrentPokemon.Type2 == "Poison" ? "selected" : "")>Poison</!option>
+                            <!option value="Vol" @(Model.CurrentPokemon.Type2 == "Vol" ? "selected" : "")>Vol</!option>
+                            <!option value="Psy" @(Model.CurrentPokemon.Type2 == "Psy" ? "selected" : "")>Psy</!option>
+                            <!option value="Electrique" @(Model.CurrentPokemon.Type2 == "Electrique" ? "selected" : "")>Electrique</!option>
+                            <!option value="Combat" @(Model.CurrentPokemon.Type2 == "Combat" ? "selected" : "")>Combat</!option>
                         </select>
                     </span>
                 </div>

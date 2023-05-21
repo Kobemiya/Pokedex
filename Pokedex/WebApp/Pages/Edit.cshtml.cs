@@ -45,7 +45,7 @@ public class EditModel : PageModel
         return Page();
     }
 
-    public async Task<IActionResult>  OnPost(long pokemonId, string name, string description, string typeOne, string typeTwo,
+    public async Task<IActionResult> OnPostSave(long pokemonId, string name, string description, string typeOne, string typeTwo,
         int hp, int speed, int attack, int speAtt, int defense, int speDef)
     {
         typeTwo = String.IsNullOrEmpty(typeTwo) ? "null" : "\"" + typeTwo + "\"";
@@ -88,7 +88,7 @@ public class EditModel : PageModel
     public async Task<IActionResult> OnPostDeletePokemon(long pokemonId)
     {
         var response = await _httpClient.DeleteAsync($"api/Pokemon/{pokemonId}");
-        if (response.IsSuccessStatusCode)
+        if (!response.IsSuccessStatusCode)
         {
             await FetchCurrentPokemon(pokemonId);
             await FetchAttacklist();
