@@ -136,9 +136,9 @@
     <div id="pokemonList" class="row">
         @foreach (var pokemon in Model.RegisteredPokemons)
         {
-            <a asp-page="/Info" asp-route-pokemonId="@pokemon.Id">
-                <div class="col-md-4 card-item" style="padding: 5px">
-                    <div class="card" style="border-radius: 5px">
+            <div class="col-md-4 card-item" style="padding: 5px">
+                <div class="card" style="border-radius: 5px">
+                    <a asp-page="/Info" asp-route-pokemonId="@pokemon.Id">
                         <img src="@Url.Content(pokemon.ImagePath)" class="card-img-top" alt="Pokemon Image" style="border-radius: 5px">
                         <div class="card-body">
                             <div style="display: flex; align-items: center; justify-content: space-between;">
@@ -167,9 +167,9 @@
                                 }
                             </div>
                         </div>
-                    </div>
+                    </a>
                 </div>
-            </a>
+            </div>
         }
     </div>
     <div id="noResultsMessage" class="row" style="@(Model.RegisteredPokemons.Any() ? "display:none; padding: 5px" : "")">
