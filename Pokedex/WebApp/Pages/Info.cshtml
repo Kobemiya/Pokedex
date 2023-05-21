@@ -1,8 +1,8 @@
-﻿@page
-@model InfoModel
+﻿@page "{pokemonId:long}"
+@model InfoModel 
 
 @{
-    ViewData["Title"] = "Info";
+    ViewData["Title"] = "Voir les informations";
 }
 
 <style>
@@ -52,7 +52,7 @@ div.horizontal#stats {
 }
 
 .attacks li {
- margin-bottom: 5px;
+  margin-bottom: 5px;
 }
 
 .description {
@@ -61,56 +61,81 @@ div.horizontal#stats {
 </style>
 
 <div class="text-center">
-    <h1 class="name">@Model.Name#@Model.Id</h1>
-    <button type="button"><a asp-page="/Edit">Modifier les informations</a></button>
     <div class="horizontal" id="desc">
         <div class="vertical" id="left">
             <div class="img-container">
-                <img src="@Url.Content(Model.ImagePath)" alt="Pokemon Image" style="border-radius: 5px">
+                <img src="@Model.CurrentPokemon.ImagePath" alt="Pokemon Image" style="border-radius: 5px">
             </div>
         </div>
 
         <div class="vertical" id="right">
-            <div class="description">@Model.Description</div>
-            <div>
-                Pokémon de type : @Model.TypeOne
-                @if (Model.TypeTwo?.Length > 0)
-                {
-                    <span>, @Model.TypeTwo</span>
-                }
+            <div class="name">
+                <label for="name">Name:</label>
+                <p>@Model.CurrentPokemon.Name</p>
             </div>
-            <!-- CHANGE INTO LINEAR TABLE -->
+            <div class="description">
+                <label for="description">Description:</label>
+                <p>@Model.CurrentPokemon.Description</p>
+            </div>
+            <div class="horizontal">
+                <div class="type">
+                    <label for="typeOne">Type 1:</label>
+                    <p>@Model.CurrentPokemon.Type1</p>
+                </div>
+                <div class="type">
+                    <label for="typeTwo">Type 2:</label>
+                    <p>@Model.CurrentPokemon.Type2</p>
+                </div>
+            </div>
             <div class="horizontal" id="stats">
-                <div class="vertical" id="first">
-                    <div>PV : @Model.HP</div>
-                    <div>Vitesse : @Model.Speed</div>
+                <div class="vertical">
+                    <div class="stat">
+                        <label for="hp">PV:</label>
+                        <p>@Model.CurrentPokemon.Hp</p>
+                    </div>
+                    <div class="stat">
+                        <label for="speed">Vitesse:</label>
+                        <p>@Model.CurrentPokemon.Speed</p>
+                    </div>
                 </div>
-                <div class="vertical" id="second">
-                    <div>Attaque : @Model.Attack</div>
-                    <div>Attaque spé. : @Model.SpeAttack</div>
+                <div class="vertical">
+                    <div class="stat">
+                        <label for="attack">Attaque:</label>
+                        <p>@Model.CurrentPokemon.Attack</p>
+                    </div>
+                    <div class="stat">
+                        <label for="speAtt">Attaque spé.:</label>
+                        <p>@Model.CurrentPokemon.AttackSpe</p>
+                    </div>
                 </div>
-                <div class="vertical" id="third">
-                    <div>Défense : @Model.Defense</div>
-                    <div>Défense spé. : @Model.SpeDefense</div>
+                <div class="vertical">
+                    <div class="stat">
+                        <label for="defense">Défense:</label>
+                        <p>@Model.CurrentPokemon.Def</p>
+                    </div>
+                    <div class="stat">
+                        <label for="speDef">Défense spé.:</label>
+                        <p>@Model.CurrentPokemon.DefSpe</p>
+                    </div>
                 </div>
             </div>
-            <!-- TURN INTO TABLE -->
             <div class="attacks">
-                Attaque(s)
+                <p>Attaque(s)</p>
                 <ul>
-                    @foreach (var attack in Model.Attacks)
+                    @foreach (var attack in Model.RegisteredAttacks.Where(a => Model.CurrentPokemon.Attacks.Contains(a.Id)))
                     {
-                        <li> @attack.Name : @attack.Description. Type : @attack.Type - Dégâts : @attack.Damage - Précision : @attack.Accuracy <button type="button" onclick="deleteAttack(@attack.Id)">Supprimer</button></li>
+                        <li> 
+                            <strong>@attack.Name:</strong> @attack.Description<br>
+                            <span>Type: @attack.Type</span><br>
+                            <span>Dégâts: @attack.Damage</span><br>
+                            <span>Précision: @attack.Accuracy</span>
+                        </li>
                     }
                 </ul>
-                <button type="button" disabled>Ajouter une attaque</button>
+            </div>
+            <div style="display: flex; justify-content: center; margin-top: 20px;">
+                <button type="button" onclick="location.href='@Url.Page("Edit", new { pokemonId = Model.CurrentPokemon.Id })'">Modifier</button>
             </div>
         </div>
     </div>
 </div>
-
-<script>
-function deleteAttack(id) {
-    console.log("Delete attack n°" + id);
-}
-</script>

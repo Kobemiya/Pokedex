@@ -1,88 +1,44 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Text;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using PokedexBackend.DataAccess.EfModels;
 
 namespace WebApp.Pages
 {
     public class InfoModel : PageModel
     {
-        public long Id;
-        [BindProperty]
-        public string Name { set; get; }
-        public string ImagePath;
-        public string TypeOne;
-        public string? TypeTwo;
-        [BindProperty]
-        public string Description { set; get; }
-        public int HP;
-        public int Speed;
-        public int Attack;
-        public int SpeAttack;
-        public int Defense;
-        public int SpeDefense;
-        public List<int> AttackIds;
-
-        public class AttackInfo
+        private readonly HttpClient _httpClient;
+        public Pokemon? CurrentPokemon;
+        public IEnumerable<Attack> RegisteredAttacks;
+        public InfoModel(IConfiguration defaultConfig)
         {
-            public long Id { get; set; }
-            public string Name { get; set; }
-            public string Type { get; set; }
-            public string Description { get; set; }
-            public int Damage { get; set; }
-            public int Accuracy { get; set; }
-
-            public AttackInfo(long id, string name, string type, string description, int damage, int accuracy)
-            {
-                Id = id;
-                Name = name;
-                Type = type;
-                Description = description;
-                Damage = damage;
-                Accuracy = accuracy;
-            }
+            _httpClient = new HttpClient { BaseAddress = new Uri(defaultConfig.GetValue<String>("apiHost")) };
         }
 
-        public List<AttackInfo> AllAttacks;
-        public IEnumerable<AttackInfo> Attacks;
-
-        private async Task<List<AttackInfo>> GetAllAttacks()
+        private async Task FetchCurrentPokemon(long id)
         {
-            AttackInfo Charge = new AttackInfo(0, "Charge", "Normal", "Charge le Pokémon adverse",
-                20, 100);
-            AttackInfo Wolfgang = new AttackInfo(1, "Wolfgang", "Combat", "Woof woof",
-                25, 80);
-            AttackInfo Ddubaddu = new AttackInfo(2, "Ddubaddu", "Fée", "Wari wari",
-                19, 99);
-            List<AttackInfo> Attacks = new List<AttackInfo>();
-            Attacks.Add(Charge);
-            Attacks.Add(Wolfgang);
-            Attacks.Add(Ddubaddu);
-            return Attacks;
+            CurrentPokemon = null;
+            var pokemonResponse = await _httpClient.GetAsync($"api/Pokemon/{id}");
+            if (!pokemonResponse.IsSuccessStatusCode) return; 
+            CurrentPokemon = await pokemonResponse.Content.ReadFromJsonAsync<Pokemon>();
         }
 
-        private async Task<List<AttackInfo>> GetAttacks(List<int> Ids)
+        private async Task FetchAttacklist()
         {
-            List<AttackInfo> attacks = new List<AttackInfo>();
-            foreach (int id in Ids)
-            {
-                attacks.Add(AllAttacks[id]);
-            }
-            return attacks;
+            var attacksResponse = await _httpClient.GetAsync("api/Attack");
+            if (attacksResponse.IsSuccessStatusCode)
+                RegisteredAttacks = await attacksResponse.Content.ReadFromJsonAsync<IEnumerable<Attack>>();
+            else
+                RegisteredAttacks = Enumerable.Empty<Attack>();
         }
-        public async Task<IActionResult> OnGet()
+
+        public async Task<IActionResult> OnGet(long pokemonId)
         {
-            Name = "Hyunjin";
-            ImagePath = "hyunjin.jpg";
-            TypeOne = "Fée";
-            Description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
-            AllAttacks = await GetAllAttacks();
-            AttackIds = new List<int> { 1, 2 };
-            Attacks = await GetAttacks(AttackIds);
+            await FetchCurrentPokemon(pokemonId);
+            await FetchAttacklist();
+            if (CurrentPokemon == null)
+                return NotFound();
             return Page();
-        }
-
-        public void OnPost()
-        {
-            Console.WriteLine("New values :" + Name + " " + Description);
         }
     }
 }
