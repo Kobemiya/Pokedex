@@ -42,12 +42,6 @@
       justify-content: space-between;
       margin: 20px;
     }
-
-    .name {
-        font-size: 24px;
-        font-weight: bold;
-        margin-bottom: 10px;
-    }
     
     body {
         font-family: Arial, sans-serif;
@@ -70,25 +64,6 @@
         height: auto;
         margin-bottom: 20px;
     }
-
-    .description {
-        font-size: 18px;
-        margin-bottom: 20px;
-    }
-
-    .type {
-        display: inline-block;
-        margin-right: 10px;
-        font-weight: bold;
-    }
-
-    .stat {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        margin-bottom: 10px;
-    }
-
     .stat label {
         font-weight: bold;
     }
@@ -98,16 +73,9 @@
     }
 </style>
 
-<div class="text-center info-container">
-    <div class="horizontal" id="desc">
-        <div class="vertical" id="left">
-            <div class="img-container">
-                <img src="" alt="Pokemon Image" style="border-radius: 5px">
-            </div>
-        </div>
-
-        
-        <div class="vertical" id="right">
+<div class="text-center info-container" style="justify-content: center">
+    <div class="horizontal" id="desc" style="justify-content: center">
+        <div class="vertical" id="right" style="justify-content: center">
             <form method="post" asp-page-handler="Create">
                 <label for="name">Name</label><br>
                 <input type="text" id="name" name="name" placeholder="Write a name..."><br>
