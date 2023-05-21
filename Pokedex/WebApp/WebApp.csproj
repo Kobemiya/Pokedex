@@ -7,6 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="wwwroot\resources\images\heart_empty.png" />
+    <None Include="wwwroot\resources\images\heart_full.png" />
     <None Include="wwwroot\Screenshot_2.jpg" />
   </ItemGroup>
   
@@ -22,6 +24,7 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\js" />
+    <Folder Include="wwwroot\resources" />
   </ItemGroup>
 
   <ItemGroup>
